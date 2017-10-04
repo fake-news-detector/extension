@@ -4,11 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run watch-extension & npm run watch-elm",
+    "watch-extension": "web-ext run",
+    "watch-elm":
+      "chokidar 'src/*.elm' -c 'elm make src/Main.elm --output dist/Main.js' --initial"
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
+    "chokidar-cli": "^1.2.0",
+    "elm": "^0.18.0",
     "web-ext": "^2.0.0"
   }
 }
