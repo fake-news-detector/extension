@@ -14,7 +14,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.facebook.com/*"],
-      "js": ["dist/facebookInjector.js"]
+      "js": ["dist/bundle.js"]
     }
   ]
 }
