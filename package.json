@@ -4,17 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run watch-extension & npm run watch-elm",
-    "watch-extension":
-      "web-ext run --verbose --ignore-files elm-stuff '*.js' node_modules 'src/*.elm'",
-    "watch-elm":
-      "chokidar 'src/*.elm' -c 'elm make src/StoryVotes.elm --output dist/StoryVotes.js && elm make src/FlagPopup.elm --output dist/FlagPopup.js' --initial"
+    "start": "npm run watch-extension & webpack --watch",
+    "watch-extension": "web-ext run --verbose --ignore-files elm-stuff src",
+    "build": "webpack"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
     "chokidar-cli": "^1.2.0",
     "elm": "^0.18.0",
-    "web-ext": "^2.0.0"
+    "elm-webpack-loader": "^4.3.1",
+    "web-ext": "^2.0.0",
+    "webpack": "^3.6.0"
   }
 }
