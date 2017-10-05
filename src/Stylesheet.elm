@@ -4,13 +4,18 @@ import Color exposing (..)
 import Style exposing (..)
 import Style.Border as Border
 import Style.Color as Color
+import Style.Font as Font
+import Style.Shadow as Shadow
 
 
 type Classes
     = NoStyle
     | Button
+    | BlueButton
     | VoteCount
     | Overlay
+    | Popup
+    | Title
 
 
 stylesheet : Style.StyleSheet Classes variation
@@ -26,6 +31,11 @@ stylesheet =
                 , Color.border (rgb 75 79 86)
                 ]
             ]
+        , style BlueButton
+            [ Color.text white
+            , Color.background (rgb 66 103 178)
+            , Border.rounded 2
+            ]
         , style VoteCount
             [ Color.text white
             , Color.background (rgba 0 0 0 0.6)
@@ -33,5 +43,20 @@ stylesheet =
             ]
         , style Overlay
             [ Color.background (rgba 0 0 0 0.2)
+            ]
+        , style Popup
+            [ Color.background white
+            , Border.all 1
+            , Border.rounded 3
+            , Color.border (rgb 229 229 229)
+            , Shadow.box
+                { offset = ( 0, 0 )
+                , size = 2
+                , blur = 26
+                , color = rgba 0 0 0 0.3
+                }
+            ]
+        , style Title
+            [ Font.size 24
             ]
         ]
