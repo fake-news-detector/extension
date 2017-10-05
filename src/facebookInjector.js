@@ -24,7 +24,7 @@ const injectDetector = () => {
   );
 
   storyLinks.forEach(storyLink => {
-    Elm.Main.embed(storyLink);
+    Elm.StoryVotes.embed(storyLink);
   });
 };
 
@@ -35,9 +35,14 @@ const injectOnFeedRefresh = () => {
     injectTimeout = setTimeout(injectDetector, 100);
   });
 
-  observer.observe(document.querySelector("[role='feed']"), {
+  observer.observe(document.querySelector("#content_container"), {
     subtree: true,
     childList: true
   });
 };
+
+Elm.FlagPopup.fullscreen();
+
+injectDetector();
+setInterval(injectDetector, 5000);
 injectOnFeedRefresh();
