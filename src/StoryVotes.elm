@@ -2,10 +2,9 @@ port module StoryVotes exposing (..)
 
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Element.Events exposing (..)
+import Helpers exposing (onClickStopPropagation)
 import Html exposing (Html)
 import Html.Attributes
-import Json.Decode
 import Stylesheet exposing (..)
 
 
@@ -66,10 +65,3 @@ votes model =
         [ button Button [ padding 4, onClickStopPropagation OpenFlagPopup ] (text "🏴 Sinalizar")
         , el VoteCount [ padding 6 ] (text "\x1F916 60% click bait")
         ]
-
-
-onClickStopPropagation : msg -> Element.Attribute variation msg
-onClickStopPropagation msg =
-    onWithOptions "click"
-        { defaultOptions | stopPropagation = True, preventDefault = True }
-        (Json.Decode.succeed msg)
