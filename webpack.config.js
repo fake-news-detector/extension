@@ -1,11 +1,9 @@
 const path = require("path");
 
 module.exports = {
-  entry: {
-    facebookInjector: "./src/facebookInjector.js"
-  },
+  entry: "./src/index.js",
   output: {
-    filename: "[name].js",
+    filename: "bundle.js",
     path: path.resolve(__dirname, "dist")
   },
   module: {
@@ -13,7 +11,7 @@ module.exports = {
       {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        use: ["elm-webpack-loader?debug=true"]
+        use: ["elm-webpack-loader"]
       }
     ]
   }

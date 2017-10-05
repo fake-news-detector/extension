@@ -1,37 +1,48 @@
-module StoryVotes exposing (..)
+port module StoryVotes exposing (..)
 
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (..)
 import Html exposing (Html)
 import Html.Attributes
+import Json.Decode
 import Stylesheet exposing (..)
 
 
 type alias Model =
-    ()
+    { url : String }
 
 
-model : ()
-model =
-    ()
+type alias Flags =
+    { url : String }
 
 
 type Msg
-    = NoOp
+    = OpenFlagPopup
 
 
-update : Msg -> Model -> Model
+port openFlagPopup : { url : String } -> Cmd msg
+
+
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( { url = flags.url }, Cmd.none )
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    model
+    case msg of
+        OpenFlagPopup ->
+            ( model, openFlagPopup { url = model.url } )
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Html.beginnerProgram
-        { model = model
+    Html.programWithFlags
+        { init = init
         , view = view
         , update = update
+        , subscriptions = always Sub.none
         }
 
 
@@ -52,6 +63,13 @@ votes : Model -> Element Classes variation Msg
 votes model =
     column NoStyle
         [ spacing 5, padding 5 ]
-        [ button Button [ padding 4, onClick NoOp ] (text "🏴 Sinalizar")
+        [ button Button [ padding 4, onClickStopPropagation OpenFlagPopup ] (text "🏴 Sinalizar")
         , el VoteCount [ padding 6 ] (text "\x1F916 60% click bait")
         ]
+
+
+onClickStopPropagation : msg -> Element.Attribute variation msg
+onClickStopPropagation msg =
+    onWithOptions "click"
+        { defaultOptions | stopPropagation = True, preventDefault = True }
+        (Json.Decode.succeed msg)
