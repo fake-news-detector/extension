@@ -14,11 +14,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.facebook.com/*"],
-      "js": [
-        "dist/FlagPopup.js",
-        "dist/StoryVotes.js",
-        "src/facebookInjector.js"
-      ]
+      "js": ["dist/facebookInjector.js"]
     }
   ]
 }
