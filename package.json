@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run watch-extension & npm run watch-elm",
-    "watch-extension": "web-ext run",
+    "watch-extension":
+      "web-ext run --verbose --ignore-files elm-stuff '*.js' node_modules 'src/*.elm'",
     "watch-elm":
-      "chokidar 'src/*.elm' -c 'elm make src/Main.elm --output dist/Main.js' --initial"
+      "chokidar 'src/*.elm' -c 'elm make src/StoryVotes.elm --output dist/StoryVotes.js && elm make src/FlagPopup.elm --output dist/FlagPopup.js' --initial"
   },
   "author": "",
   "license": "MIT",
