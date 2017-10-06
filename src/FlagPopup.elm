@@ -1,15 +1,13 @@
 port module FlagPopup exposing (..)
 
-import Category exposing (Category(..))
+import Data.Category as Category exposing (Category(..))
+import Data.Votes as Votes
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (..)
 import Element.Input as Input
 import Helpers exposing (onClickStopPropagation)
 import Html exposing (Html)
-import Http
-import Json.Decode
-import Json.Encode
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
@@ -60,16 +58,7 @@ update msg model =
             case model.selectedCategory of
                 Just selectedCategory ->
                     ( { model | submitResponse = Loading }
-                    , Http.post "https://fake-news-detector-api.herokuapp.com/vote"
-                        (Http.jsonBody <|
-                            Json.Encode.object
-                                [ ( "uuid", Json.Encode.string "123" )
-                                , ( "url", Json.Encode.string model.url )
-                                , ( "title", Json.Encode.string "foo" )
-                                , ( "category_id", Json.Encode.int (Category.toId selectedCategory) )
-                                ]
-                        )
-                        (Json.Decode.succeed ())
+                    , Votes.postVote model.url selectedCategory
                         |> RemoteData.sendRequest
                         |> Cmd.map SubmitResponse
                     )
