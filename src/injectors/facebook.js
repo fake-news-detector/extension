@@ -18,6 +18,8 @@ export default onInject => {
     return null;
   };
 
+  const getStoryTitle = a => a.parentNode.querySelector("a").textContent;
+
   const injectDetector = () => {
     const storyLinks = [].filter.call(
       document.querySelectorAll(".fbUserStory a[href]"),
@@ -25,7 +27,11 @@ export default onInject => {
     );
 
     storyLinks.forEach(storyLink => {
-      onInject(storyLink, getNonFacebookUrl(storyLink));
+      onInject(
+        storyLink,
+        getNonFacebookUrl(storyLink),
+        getStoryTitle(storyLink)
+      );
     });
   };
 

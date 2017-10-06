@@ -9,8 +9,9 @@ localStorage.setItem("uuid", uuid);
 const popup = FlagPopup.fullscreen({ uuid });
 
 let storyVotes = {};
-const onInject = (elem, url) => {
-  const storyVoting = StoryVotes.embed(elem, { url: url });
+const onInject = (elem, url, title) => {
+  console.log("title", title);
+  const storyVoting = StoryVotes.embed(elem, { url, title });
   storyVoting.ports.openFlagPopup.subscribe(popup.ports.openFlagPopup.send);
   storyVotes[url] = storyVoting;
 };

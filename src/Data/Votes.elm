@@ -26,18 +26,18 @@ getVotes url =
     Http.get ("https://fake-news-detector-api.herokuapp.com/votes?url=" ++ encodeUri url) decodeVoteCount
 
 
-encodeNewVote : String -> String -> Category -> Json.Encode.Value
-encodeNewVote uuid url category =
+encodeNewVote : String -> String -> String -> Category -> Json.Encode.Value
+encodeNewVote uuid url title category =
     Json.Encode.object
         [ ( "uuid", Json.Encode.string uuid )
         , ( "url", Json.Encode.string url )
-        , ( "title", Json.Encode.string "foo" )
+        , ( "title", Json.Encode.string title )
         , ( "category_id", Json.Encode.int (Category.toId category) )
         ]
 
 
-postVote : String -> String -> Category -> Http.Request ()
-postVote uuid url category =
+postVote : String -> String -> String -> Category -> Http.Request ()
+postVote uuid url title category =
     Http.post "https://fake-news-detector-api.herokuapp.com/vote"
-        (Http.jsonBody (encodeNewVote uuid url category))
+        (Http.jsonBody (encodeNewVote uuid url title category))
         (Json.Decode.succeed ())

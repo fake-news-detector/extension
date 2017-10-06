@@ -16,6 +16,7 @@ type alias Model =
     { isOpen : Bool
     , uuid : String
     , url : String
+    , title : String
     , selectedCategory : Maybe Category
     , submitResponse : WebData ()
     }
@@ -26,6 +27,7 @@ init flags =
     ( { isOpen = False
       , uuid = flags.uuid
       , url = ""
+      , title = ""
       , selectedCategory = Nothing
       , submitResponse = NotAsked
       }
@@ -36,8 +38,11 @@ init flags =
 port broadcastVote : { url : String, categoryId : Int } -> Cmd msg
 
 
+port openFlagPopup : ({ url : String, title : String } -> msg) -> Sub msg
+
+
 type Msg
-    = OpenPopup { url : String }
+    = OpenPopup { url : String, title : String }
     | ClosePopup
     | SelectCategory Category
     | SubmitFlag
@@ -47,8 +52,8 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        OpenPopup { url } ->
-            ( { model | isOpen = True, url = url }, Cmd.none )
+        OpenPopup { url, title } ->
+            ( { model | isOpen = True, url = url, title = title }, Cmd.none )
 
         ClosePopup ->
             init { uuid = model.uuid }
@@ -60,7 +65,7 @@ update msg model =
             case model.selectedCategory of
                 Just selectedCategory ->
                     ( { model | submitResponse = Loading }
-                    , Votes.postVote model.uuid model.url selectedCategory
+                    , Votes.postVote model.uuid model.url model.title selectedCategory
                         |> RemoteData.sendRequest
                         |> Cmd.map SubmitResponse
                     )
@@ -95,9 +100,6 @@ main =
         , update = update
         , subscriptions = subscriptions
         }
-
-
-port openFlagPopup : ({ url : String } -> msg) -> Sub msg
 
 
 subscriptions : Model -> Sub Msg
