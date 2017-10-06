@@ -11,6 +11,8 @@
     "48": "icons/beasts-48.png"
   },
 
+  "permissions": ["*://fake-news-detector-api.herokuapp.com/*", "webRequest"],
+
   "content_scripts": [
     {
       "matches": ["*://*.facebook.com/*"],
