@@ -1,4 +1,4 @@
-module Category exposing (..)
+module Data.Category exposing (..)
 
 
 type Category

@@ -1,13 +1,14 @@
 port module StoryVotes exposing (..)
 
-import Category exposing (Category)
+import Data.Category as Category exposing (Category)
+import Data.Votes as Votes exposing (VoteCount)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (onClickStopPropagation)
 import Html exposing (Html)
 import Html.Attributes
 import Http exposing (encodeUri)
-import Json.Decode
+import List.Extra
 import Stylesheet exposing (..)
 
 
@@ -31,35 +32,27 @@ port openFlagPopup : { url : String } -> Cmd msg
 port addVote : ({ categoryId : Int } -> msg) -> Sub msg
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    addVote AddVote
+main : Program Flags Model Msg
+main =
+    Html.programWithFlags
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { url = flags.url, votes = [] }, getVotes flags.url )
-
-
-type alias VoteCount =
-    { category : Category, count : Int }
-
-
-decodeVoteCount : Json.Decode.Decoder (List VoteCount)
-decodeVoteCount =
-    Json.Decode.list
-        (Json.Decode.map2 VoteCount
-            (Json.Decode.field "category_id" Json.Decode.int
-                |> Json.Decode.map Category.fromId
-            )
-            (Json.Decode.field "count" Json.Decode.int)
-        )
-
-
-getVotes : String -> Cmd Msg
-getVotes url =
-    Http.get ("https://fake-news-detector-api.herokuapp.com/votes?url=" ++ encodeUri url) decodeVoteCount
+    ( { url = flags.url, votes = [] }
+    , Votes.getVotes flags.url
         |> Http.send VotesResponse
+    )
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    addVote AddVote
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -81,34 +74,18 @@ update msg model =
                 category =
                     Category.fromId categoryId
 
-                hasVote =
-                    List.filter (\voteCount -> voteCount.category == category) model.votes
-                        |> List.head
+                isCategory voteCount =
+                    voteCount.category == category
 
                 votes =
-                    if hasVote == Nothing then
+                    if List.Extra.find isCategory model.votes == Nothing then
                         { category = category, count = 1 } :: model.votes
                     else
-                        List.map
-                            (\voteCount ->
-                                if voteCount.category == category then
-                                    { voteCount | count = voteCount.count + 1 }
-                                else
-                                    voteCount
-                            )
+                        List.Extra.updateIf isCategory
+                            (\voteCount -> { voteCount | count = voteCount.count + 1 })
                             model.votes
             in
             ( { model | votes = votes }, Cmd.none )
-
-
-main : Program Flags Model Msg
-main =
-    Html.programWithFlags
-        { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
-        }
 
 
 view : Model -> Html Msg
