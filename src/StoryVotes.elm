@@ -13,11 +13,11 @@ import Stylesheet exposing (..)
 
 
 type alias Model =
-    { url : String, votes : List VoteCount }
+    { url : String, title : String, votes : List VoteCount }
 
 
 type alias Flags =
-    { url : String }
+    { url : String, title : String }
 
 
 type Msg
@@ -26,7 +26,7 @@ type Msg
     | AddVote { categoryId : Int }
 
 
-port openFlagPopup : { url : String } -> Cmd msg
+port openFlagPopup : { url : String, title : String } -> Cmd msg
 
 
 port addVote : ({ categoryId : Int } -> msg) -> Sub msg
@@ -44,7 +44,7 @@ main =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { url = flags.url, votes = [] }
+    ( { url = flags.url, title = flags.title, votes = [] }
     , Votes.getVotes flags.url
         |> Http.send VotesResponse
     )
@@ -59,7 +59,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         OpenFlagPopup ->
-            ( model, openFlagPopup { url = model.url } )
+            ( model, openFlagPopup { url = model.url, title = model.title } )
 
         VotesResponse response ->
             case response of
