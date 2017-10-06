@@ -5,17 +5,18 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run watch-extension & webpack --watch",
-    "watch-extension":
-      "web-ext run --verbose --ignore-files 'src/**/*' 'elm-stuff/**/*'",
+    "watch-extension": "web-ext run --verbose --ignore-files 'src/**/*' 'elm-stuff/**/*'",
     "build": "webpack"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "chokidar-cli": "^1.2.0",
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.3.1",
     "web-ext": "^2.0.0",
     "webpack": "^3.6.0"
+  },
+  "dependencies": {
+    "uuid": "^3.1.0"
   }
 }
