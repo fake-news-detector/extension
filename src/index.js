@@ -4,11 +4,15 @@ import facebookInjector from "./injectors/facebook";
 
 const popup = FlagPopup.fullscreen();
 
-let storyVotes = [];
+let storyVotes = {};
 const onInject = (elem, url) => {
   const storyVoting = StoryVotes.embed(elem, { url: url });
   storyVoting.ports.openFlagPopup.subscribe(popup.ports.openFlagPopup.send);
-  storyVotes.push(storyVoting);
+  storyVotes[url] = storyVoting;
 };
+
+popup.ports.broadcastVote.subscribe(({ url, categoryId }) => {
+  storyVotes[url].ports.addVote.send({ categoryId });
+});
 
 facebookInjector(onInject);

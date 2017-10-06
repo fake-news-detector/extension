@@ -1,10 +1,16 @@
 port module FlagPopup exposing (..)
 
+import Category exposing (Category(..))
 import Element exposing (..)
 import Element.Attributes exposing (..)
+import Element.Events exposing (..)
 import Element.Input as Input
 import Helpers exposing (onClickStopPropagation)
 import Html exposing (Html)
+import Http
+import Json.Decode
+import Json.Encode
+import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
 
@@ -12,6 +18,7 @@ type alias Model =
     { isOpen : Bool
     , url : String
     , selectedCategory : Maybe Category
+    , submitResponse : WebData ()
     }
 
 
@@ -20,23 +27,21 @@ init =
     ( { isOpen = False
       , url = ""
       , selectedCategory = Nothing
+      , submitResponse = NotAsked
       }
     , Cmd.none
     )
 
 
-type Category
-    = Legitimate
-    | FakeNews
-    | ClickBait
-    | ExtremelyBiased
-    | Satire
+port broadcastVote : { url : String, categoryId : Int } -> Cmd msg
 
 
 type Msg
     = OpenPopup { url : String }
     | ClosePopup
     | SelectCategory Category
+    | SubmitFlag
+    | SubmitResponse (WebData ())
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -46,10 +51,45 @@ update msg model =
             ( { model | isOpen = True, url = url }, Cmd.none )
 
         ClosePopup ->
-            ( { model | isOpen = False, url = "", selectedCategory = Nothing }, Cmd.none )
+            init
 
         SelectCategory category ->
             ( { model | selectedCategory = Just category }, Cmd.none )
+
+        SubmitFlag ->
+            case model.selectedCategory of
+                Just selectedCategory ->
+                    ( { model | submitResponse = Loading }
+                    , Http.post "https://fake-news-detector-api.herokuapp.com/vote"
+                        (Http.jsonBody <|
+                            Json.Encode.object
+                                [ ( "uuid", Json.Encode.string "123" )
+                                , ( "url", Json.Encode.string model.url )
+                                , ( "title", Json.Encode.string "foo" )
+                                , ( "category_id", Json.Encode.int (Category.toId selectedCategory) )
+                                ]
+                        )
+                        (Json.Decode.succeed ())
+                        |> RemoteData.sendRequest
+                        |> Cmd.map SubmitResponse
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
+
+        SubmitResponse response ->
+            if isSuccess response then
+                ( Tuple.first (update ClosePopup model)
+                , broadcastVote
+                    { url = model.url
+                    , categoryId =
+                        model.selectedCategory
+                            |> Maybe.map Category.toId
+                            |> Maybe.withDefault 0
+                    }
+                )
+            else
+                ( { model | submitResponse = response }, Cmd.none )
 
 
 main : Program Never Model Msg
@@ -89,6 +129,7 @@ popup model =
                         , paragraph NoStyle [] [ text "Qual das opções abaixo define melhor este conteúdo?" ]
                         , flagForm model
                         ]
+                        |> onRight [ button CloseButton [ onClick ClosePopup, padding 8, moveLeft 8, moveUp 20 ] (text "x") ]
                     )
                 )
         )
@@ -124,10 +165,22 @@ flagForm model =
                         "Conteúdo propositalmente falso, para fins humorísticos"
                     ]
                 }
+            , case model.submitResponse of
+                Failure err ->
+                    paragraph NoStyle [] [ text (toString err) ]
+
+                _ ->
+                    empty
             , row NoStyle
                 [ width fill, paddingTop 20, spread, verticalCenter ]
                 [ italic ("link: " ++ model.url)
-                , button BlueButton [ padding 5, onClickStopPropagation ClosePopup ] (text "Sinalizar")
+                , button BlueButton
+                    [ padding 5, onClickStopPropagation SubmitFlag ]
+                    (if isLoading model.submitResponse then
+                        text "Carregando..."
+                     else
+                        text "Sinalizar"
+                    )
                 ]
             ]
 

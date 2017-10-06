@@ -12,10 +12,12 @@ type Classes
     = NoStyle
     | Button
     | BlueButton
-    | VoteCount
+    | VoteCountItem
     | Overlay
     | Popup
     | Title
+    | CloseButton
+    | VoteEmoji
 
 
 stylesheet : Style.StyleSheet Classes variation
@@ -36,7 +38,7 @@ stylesheet =
             , Color.background (rgb 66 103 178)
             , Border.rounded 2
             ]
-        , style VoteCount
+        , style VoteCountItem
             [ Color.text white
             , Color.background (rgba 0 0 0 0.6)
             , Border.rounded 6
@@ -58,5 +60,17 @@ stylesheet =
             ]
         , style Title
             [ Font.size 24
+            ]
+        , style CloseButton
+            [ Font.size 18
+            , Color.text grey
+            , Font.weight 300
+            , Color.background white
+            , hover
+                [ Color.text darkGrey
+                ]
+            ]
+        , style VoteEmoji
+            [ Font.size 20
             ]
         ]
