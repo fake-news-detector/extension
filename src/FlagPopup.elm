@@ -14,15 +14,17 @@ import Stylesheet exposing (..)
 
 type alias Model =
     { isOpen : Bool
+    , uuid : String
     , url : String
     , selectedCategory : Maybe Category
     , submitResponse : WebData ()
     }
 
 
-init : ( Model, Cmd Msg )
-init =
+init : Flags -> ( Model, Cmd Msg )
+init flags =
     ( { isOpen = False
+      , uuid = flags.uuid
       , url = ""
       , selectedCategory = Nothing
       , submitResponse = NotAsked
@@ -49,7 +51,7 @@ update msg model =
             ( { model | isOpen = True, url = url }, Cmd.none )
 
         ClosePopup ->
-            init
+            init { uuid = model.uuid }
 
         SelectCategory category ->
             ( { model | selectedCategory = Just category }, Cmd.none )
@@ -58,7 +60,7 @@ update msg model =
             case model.selectedCategory of
                 Just selectedCategory ->
                     ( { model | submitResponse = Loading }
-                    , Votes.postVote model.url selectedCategory
+                    , Votes.postVote model.uuid model.url selectedCategory
                         |> RemoteData.sendRequest
                         |> Cmd.map SubmitResponse
                     )
@@ -81,9 +83,13 @@ update msg model =
                 ( { model | submitResponse = response }, Cmd.none )
 
 
-main : Program Never Model Msg
+type alias Flags =
+    { uuid : String }
+
+
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , view = view
         , update = update

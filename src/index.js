@@ -1,8 +1,12 @@
 import { StoryVotes } from "./StoryVotes.elm";
 import { FlagPopup } from "./FlagPopup.elm";
 import facebookInjector from "./injectors/facebook";
+import uuidv4 from "uuid/v4";
 
-const popup = FlagPopup.fullscreen();
+const uuid = localStorage.getItem("uuid") || uuidv4();
+localStorage.setItem("uuid", uuid);
+
+const popup = FlagPopup.fullscreen({ uuid });
 
 let storyVotes = {};
 const onInject = (elem, url) => {
