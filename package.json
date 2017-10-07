@@ -6,11 +6,16 @@
   "scripts": {
     "start": "npm run watch-extension & webpack --watch",
     "watch-extension": "web-ext run --ignore-files 'src/**/*' 'elm-stuff/**/*'",
-    "build": "webpack"
+    "lint": "web-ext lint --ignore-files 'elm-stuff/**/*'",
+    "build":
+      "webpack -p && web-ext build --ignore-files 'elm-stuff/**/*' 'src/**/*'"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.3.1",
     "web-ext": "^2.0.0",

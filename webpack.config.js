@@ -12,6 +12,11 @@ module.exports = {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
         use: ["elm-webpack-loader"]
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "babel-loader"
       }
     ]
   }
