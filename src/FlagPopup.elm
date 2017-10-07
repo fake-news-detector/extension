@@ -6,7 +6,7 @@ import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (..)
 import Element.Input as Input
-import Helpers exposing (onClickStopPropagation)
+import Helpers exposing (humanizeError, onClickStopPropagation)
 import Html exposing (Html)
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
@@ -136,7 +136,7 @@ flagForm : Model -> Element Classes variation Msg
 flagForm model =
     node "form" <|
         column NoStyle
-            []
+            [ spacing 15 ]
             [ Input.radio NoStyle
                 [ spacing 15
                 ]
@@ -164,12 +164,12 @@ flagForm model =
                 }
             , case model.submitResponse of
                 Failure err ->
-                    paragraph NoStyle [] [ text (toString err) ]
+                    paragraph ErrorMessage [ padding 6 ] [ text (humanizeError err) ]
 
                 _ ->
                     empty
             , row NoStyle
-                [ width fill, paddingTop 20, spread, verticalCenter ]
+                [ width fill, spread, verticalCenter ]
                 [ italic ("link: " ++ model.url)
                 , button BlueButton
                     [ padding 5, onClickStopPropagation SubmitFlag ]

@@ -18,6 +18,7 @@ type Classes
     | Title
     | CloseButton
     | VoteEmoji
+    | ErrorMessage
 
 
 stylesheet : Style.StyleSheet Classes variation
@@ -72,5 +73,12 @@ stylesheet =
             ]
         , style VoteEmoji
             [ Font.size 20
+            ]
+        , style ErrorMessage
+            [ Color.border (rgb 245 198 203)
+            , Color.background (rgb 248 215 218)
+            , Color.text (rgb 114 28 36)
+            , Border.all 1
+            , Border.rounded 3
             ]
         ]
