@@ -11,3 +11,7 @@ npm start
 ```
 
 Now go to `facebook.com`, sign in and scroll for seeing it on some news.
+
+# Credits
+
+The extension icon was created by Leif Michelsen, for The Noun Project.

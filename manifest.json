@@ -5,10 +5,10 @@
 
   "description":
     "Allows users to flag you newsfeed links as fake news, click baits, and more.",
-  "homepage_url":
-    "https://github.com/mdn/webextensions-examples/tree/master/beastify",
+  "homepage_url": "https://fake-news-detector.github.io/",
   "icons": {
-    "48": "icons/beasts-48.png"
+    "48": "icons/trump-48.png",
+    "96": "icons/trump-96.svg"
   },
 
   "permissions": ["*://fake-news-detector-api.herokuapp.com/*", "webRequest"],
