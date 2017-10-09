@@ -5,10 +5,14 @@
   "main": "index.js",
   "scripts": {
     "install": "elm-package install",
-    "start": "npm run watch-extension & webpack --watch",
-    "watch-extension": "web-ext run --ignore-files 'src/**/*' 'elm-stuff/**/*'",
+    "start": "npm run start:extension & webpack --watch",
+    "start:extension": "web-ext run --ignore-files 'src/**/*' 'elm-stuff/**/*'",
     "lint": "web-ext lint --ignore-files 'elm-stuff/**/*'",
-    "build": "webpack -p && web-ext build --ignore-files 'elm-stuff/**/*' 'src/**/*'"
+    "build":
+      "webpack -p && web-ext build --ignore-files 'elm-stuff/**/*' 'src/**/*'",
+    "test":
+      "mocha test/**/*.spec.js --require babel-register --require jsdom-global/register",
+    "test:watch": "npm run test -- --watch"
   },
   "author": "",
   "license": "MIT",
@@ -16,8 +20,13 @@
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.0",
+    "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.3.1",
+    "jsdom": "^11.3.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^4.0.1",
     "web-ext": "^2.0.0",
     "webpack": "^3.6.0"
   },
