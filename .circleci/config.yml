@@ -23,3 +23,9 @@ jobs:
             - node_modules
             - elm-stuff
             - tests/elm-stuff
+      - deploy:
+          name: deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              npm run publish:chrome
+            fi
