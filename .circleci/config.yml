@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/app
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependencies-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum "elm-package.json" }}
+      - run:
+          name: install-dependencies
+          command: npm install
+      - run:
+          name: test
+          command: npm test
+      - run:
+          name: build
+          command: npm run build
+      - save_cache:
+          key: dependencies-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}-{{ checksum "elm-package.json" }}
+          paths:
+            - node_modules
+            - elm-stuff
+            - tests/elm-stuff

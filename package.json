@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install": "elm-package install",
+    "install": "elm-package install -y",
     "start": "npm run start:extension & webpack --watch",
     "start:extension": "web-ext run --ignore-files 'src/**/*' 'elm-stuff/**/*'",
     "lint": "web-ext lint --ignore-files 'elm-stuff/**/*'",
