@@ -9,10 +9,12 @@
     "start:extension": "web-ext run --ignore-files 'src/**/*' 'elm-stuff/**/*'",
     "lint": "web-ext lint --ignore-files 'elm-stuff/**/*'",
     "build":
-      "webpack -p && web-ext build --ignore-files 'elm-stuff/**/*' 'src/**/*' 'test/**/*'",
+      "rm -r web-ext-artifacts; webpack -p --progress && web-ext build --ignore-files 'elm-stuff/**/*' 'src/**/*' 'test/**/*'",
     "test":
       "mocha test --recursive --require babel-register --require jsdom-global/register",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "publish:chrome":
+      "webstore upload --source web-ext-artifacts/*.zip --extension-id alomdfnfpbaagehmdokilpbjcjhacabk --client-id $CLIENT_ID --client-secret $CLIENT_SECRET --refresh-token $REFRESH_TOKEN --auto-publish"
   },
   "author": "",
   "license": "MIT",
@@ -22,6 +24,7 @@
     "babel-preset-env": "^1.6.0",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
+    "chrome-webstore-upload-cli": "^1.1.1",
     "elm": "^0.18.0",
     "elm-webpack-loader": "^4.3.1",
     "jsdom": "^11.3.0",
