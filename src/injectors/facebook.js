@@ -1,39 +1,30 @@
+import { getExternalLinkStory } from "./facebook/externalLinks.js";
+import { getPagePost } from "./facebook/pagePost.js";
+import { getSharePagePost } from "./facebook/sharePagePost.js";
+
 export default onInject => {
-  // ex: https://l.facebook.com/l.php?u=https%3A%2F%2Ftecnoblog.net%2F224816%2Frumor-preco-iphone-8-plus-brasil%2F&h=ATPUoAPZS7_4ovGV7USWGOosDT_5NhE1bYLryDQKKfgt03fwcna46IbFp1CItisdDKszIIV5JfaDe9oifkpB2kdUpRQLF9AsnoXCjD9POpKrKYmrAb6cFjNtRbzZryhYOs7aygRS_bI-VUu8IfF801fPixhsajw9w7qFjSZjdjTQfUohtPKwS8Q-zor81wKNdqbWHUSLZcwCFrf8TDUELQdeHuwxJngRiWTz1d1W3dBYQqHA_Wcud__TVhpfjzAS2pBeYlbf4vXyH2HdfcQ6k0YrC2v4aBb1HWwDGw
-  const filterLink = a => {
-    if (a.dataset.appname || a.text || !a.className) return false;
+  const findElementToRenderDetector = userStory =>
+    getExternalLinkStory(userStory) ||
+    getPagePost(userStory) ||
+    getSharePagePost(userStory);
 
-    return getNonFacebookUrl(a);
+  const notAdvertisement = userStory =>
+    userStory.querySelector(".timestampContent");
+
+  const notNested = userStory => !userStory.querySelector(".fbUserStory");
+
+  const markChecked = userStory => {
+    userStory.classList.add("fnd-checked");
+    return userStory;
   };
 
-  const getNonFacebookUrl = a => {
-    if (!a.href.match(/facebook\.com/)) {
-      return a.href;
-    }
-    const matches = a.href.match(/facebook\.com\/l.php\?u=(.*?)&/);
-    if (matches) {
-      return decodeURIComponent(matches[1]);
-    }
-
-    return null;
-  };
-
-  const getStoryTitle = a => a.parentNode.querySelector("a").textContent;
-
-  const injectDetector = () => {
-    const storyLinks = [].filter.call(
-      document.querySelectorAll(".fbUserStory a[href]"),
-      filterLink
-    );
-
-    storyLinks.forEach(storyLink => {
-      onInject(
-        storyLink,
-        getNonFacebookUrl(storyLink),
-        getStoryTitle(storyLink)
-      );
-    });
-  };
+  const injectDetector = () =>
+    [...document.querySelectorAll(".fbUserStory:not(.fnd-checked)")]
+      .map(markChecked)
+      .filter(notAdvertisement)
+      .map(findElementToRenderDetector)
+      .filter(a => a)
+      .forEach(onInject);
 
   let injectTimeout;
   const injectOnFeedRefresh = () => {

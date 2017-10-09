@@ -9,9 +9,12 @@ localStorage.setItem("uuid", uuid);
 const popup = FlagPopup.fullscreen({ uuid });
 
 let storyVotes = {};
-const onInject = (elem, url, title) => {
-  console.log("title", title);
-  const storyVoting = StoryVotes.embed(elem, { url, title });
+const onInject = ({ elem, url, title }) => {
+  const newNode = document.createElement("div");
+  newNode.style.position = "relative";
+  elem.insertBefore(newNode, elem.firstChild);
+
+  const storyVoting = StoryVotes.embed(newNode, { url, title });
   storyVoting.ports.openFlagPopup.subscribe(popup.ports.openFlagPopup.send);
   storyVotes[url] = storyVoting;
 };
