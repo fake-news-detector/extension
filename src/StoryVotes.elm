@@ -127,7 +127,7 @@ flagButtonAndVotes model =
 viewVotes : PeopleAndRobotVotes -> Element Classes variation Msg
 viewVotes votes =
     column NoStyle
-        []
+        [ spacing 5 ]
         [ case Votes.bestRobotGuess votes.robot of
             Just ( category, chance ) ->
                 row VoteCountItem
