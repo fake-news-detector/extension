@@ -6,7 +6,7 @@ describe("Share Page Post", () => {
 
   describe("share page post", () => {
     before(() => {
-      userStory = userStoryFromFixture("facebook/sharedPostFromPage");
+      userStory = userStoryFromFixture("sharedPostFromPage");
     });
 
     it("gets the post description as title", () => {
@@ -30,7 +30,7 @@ describe("Share Page Post", () => {
 
   describe("share profile post", () => {
     it("returns null because it is not a page post", () => {
-      userStory = userStoryFromFixture("facebook/sharedPostFromProfile");
+      userStory = userStoryFromFixture("sharedPostFromProfile");
       expect(getSharePagePost(userStory)).to.equal(null);
     });
   });

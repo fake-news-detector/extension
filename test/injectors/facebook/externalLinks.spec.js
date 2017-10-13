@@ -9,16 +9,16 @@ describe("External Links", () => {
 
   describe("post with external links", () => {
     before(() => {
-      userStory = userStoryFromFixture("facebook/postWithExternalLink");
+      userStory = userStoryFromFixture("postWithExternalLink");
     });
 
-    it("gets the post description as title", () => {
+    it("gets the link title", () => {
       expect(getExternalLinkStory(userStory).title).to.equal(
         "O dia em que Adriane Galisteu e Faustão estrelaram uma videocassetada ao vivo na TV"
       );
     });
 
-    it("gets the url from the original post", () => {
+    it("gets the external url", () => {
       expect(getExternalLinkStory(userStory).url).to.equal(
         "http://huffp.st/2ynax3o"
       );
@@ -33,7 +33,7 @@ describe("External Links", () => {
 
   describe("post with internal links", () => {
     it("returns null because it is not an external link", () => {
-      userStory = userStoryFromFixture("facebook/sharedPostFromPage");
+      userStory = userStoryFromFixture("sharedPostFromPage");
       expect(getExternalLinkStory(userStory)).to.equal(null);
     });
   });

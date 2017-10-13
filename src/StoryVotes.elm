@@ -109,8 +109,8 @@ view model =
 
 flagButtonAndVotes : Model -> Element Classes variation Msg
 flagButtonAndVotes model =
-    column NoStyle
-        [ spacing 5, padding 5 ]
+    column General
+        [ spacing 5, padding 5, minWidth (px 130) ]
         [ button Button [ padding 4, onClickStopPropagation OpenFlagPopup ] (text "🏴 Sinalizar")
         , case model.votes of
             Success votes ->
@@ -147,7 +147,7 @@ viewRobotVotes : PeopleVote -> Element Classes variation Msg
 viewRobotVotes voteCount =
     row VoteCountItem
         [ padding 6, spacing 5, height (px 26) ]
-        [ el VoteEmoji [ moveUp 5 ] (text (Category.toEmoji voteCount.category))
+        [ el VoteEmoji [ moveUp 4 ] (text (Category.toEmoji voteCount.category))
         , text (toString voteCount.count)
         , text (Category.toName voteCount.category)
         ]
@@ -157,7 +157,7 @@ viewPeopleVotes : PeopleVote -> Element Classes variation Msg
 viewPeopleVotes voteCount =
     row VoteCountItem
         [ padding 6, spacing 5, height (px 26) ]
-        [ el VoteEmoji [ moveUp 5 ] (text (Category.toEmoji voteCount.category))
+        [ el VoteEmoji [ moveUp 4 ] (text (Category.toEmoji voteCount.category))
         , text (toString voteCount.count)
         , text (Category.toName voteCount.category)
         ]
