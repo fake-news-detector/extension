@@ -10,6 +10,7 @@ import Style.Shadow as Shadow
 
 type Classes
     = NoStyle
+    | General
     | Button
     | BlueButton
     | VoteCountItem
@@ -24,7 +25,10 @@ type Classes
 stylesheet : Style.StyleSheet Classes variation
 stylesheet =
     styleSheet
-        [ style Button
+        [ style General
+            [ Font.size 12
+            ]
+        , style Button
             [ Color.text (rgb 75 79 86)
             , Border.all 1
             , Color.background (rgb 246 247 249)
