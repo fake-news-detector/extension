@@ -40,6 +40,8 @@ const injectOnFeedRefresh = onInject => {
 };
 
 export default onInject => {
+  if (!document.location.href.match("facebook.com")) return false;
+
   setInterval(injectDetector(onInject), 5000);
   injectOnFeedRefresh(onInject);
   injectDetector(onInject)();

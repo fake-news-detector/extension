@@ -15,7 +15,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.facebook.com/*"],
+      "matches": ["*://*.facebook.com/*", "*://*.twitter.com/*"],
       "js": ["dist/bundle.js"]
     }
   ]
