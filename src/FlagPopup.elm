@@ -120,7 +120,7 @@ popup model =
                 [ width (percent 100), height (percent 100) ]
                 (modal Popup
                     [ center, verticalCenter, padding 20, width (px 450) ]
-                    (column NoStyle
+                    (column General
                         [ spacing 15 ]
                         [ h1 Title [] (text "Sinalizar conteúdo")
                         , paragraph NoStyle [] [ text "Qual das opções abaixo define melhor este conteúdo?" ]
