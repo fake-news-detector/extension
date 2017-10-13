@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Fake News Detector",
-  "version": "0.5",
+  "version": "0.6",
 
   "description":
     "Allows users to flag you newsfeed links as fake news, click baits, and more.",
@@ -15,7 +15,7 @@
 
   "content_scripts": [
     {
-      "matches": ["*://*.facebook.com/*"],
+      "matches": ["*://*.facebook.com/*", "*://*.twitter.com/*"],
       "js": ["dist/bundle.js"]
     }
   ]

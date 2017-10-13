@@ -6,7 +6,7 @@ describe("Page Post", () => {
 
   describe("page post", () => {
     before(() => {
-      userStory = userStoryFromFixture("facebook/postFromPage");
+      userStory = userStoryFromFixture("postFromPage");
     });
 
     it("gets the post description as title", () => {
@@ -30,7 +30,7 @@ describe("Page Post", () => {
 
   describe("profile post", () => {
     it("returns null because it is not a page post", () => {
-      userStory = userStoryFromFixture("facebook/postFromProfile");
+      userStory = userStoryFromFixture("postFromProfile");
       expect(getPagePost(userStory)).to.equal(null);
     });
   });
