@@ -27,5 +27,6 @@ jobs:
           name: deploy
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              npm run publish:chrome
+              npm run publish:chrome > publish.log 2>&1 && cat publish.log ||
+              (cat publish.log && cat publish.log | grep PKG_INVALID_VERSION_NUMBER && echo "Same version, skipping the deploy")
             fi
