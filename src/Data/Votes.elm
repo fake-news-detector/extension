@@ -2,7 +2,8 @@ module Data.Votes exposing (..)
 
 import Data.Category as Category exposing (..)
 import Http exposing (encodeUri)
-import Json.Decode
+import Json.Decode exposing (Decoder, float, int, list, nullable)
+import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
 import List.Extra
 
@@ -15,42 +16,43 @@ type alias RobotVote =
     { category : Category, chance : Float }
 
 
-type alias PeopleAndRobotVotes =
-    { robot : List RobotVote, people : List PeopleVote }
+type alias VerifiedVote =
+    { category : Category }
 
 
-decodePeopleAndRobotVotes : Json.Decode.Decoder PeopleAndRobotVotes
-decodePeopleAndRobotVotes =
-    Json.Decode.map2 PeopleAndRobotVotes
-        (Json.Decode.field "robot" decodeRobotVotes)
-        (Json.Decode.field "people" decodePeopleVotes)
+type alias VotesResponse =
+    { verified : Maybe VerifiedVote, robot : List RobotVote, people : List PeopleVote }
 
 
-decodeRobotVotes : Json.Decode.Decoder (List RobotVote)
-decodeRobotVotes =
-    Json.Decode.list
-        (Json.Decode.map2 RobotVote
-            (Json.Decode.field "category_id" Json.Decode.int
-                |> Json.Decode.map Category.fromId
-            )
-            (Json.Decode.field "chance" Json.Decode.float)
-        )
+decodeVotesResponse : Decoder VotesResponse
+decodeVotesResponse =
+    let
+        decodeCategory =
+            required "category_id" (Json.Decode.map Category.fromId int)
+
+        decodeVerifiedVote =
+            decode VerifiedVote
+                |> decodeCategory
+
+        decodeRobotVote =
+            decode RobotVote
+                |> decodeCategory
+                |> required "chance" float
+
+        decodePeopleVote =
+            decode PeopleVote
+                |> decodeCategory
+                |> required "count" int
+    in
+    decode VotesResponse
+        |> required "verified" (nullable decodeVerifiedVote)
+        |> required "robot" (list decodeRobotVote)
+        |> required "people" (list decodePeopleVote)
 
 
-decodePeopleVotes : Json.Decode.Decoder (List PeopleVote)
-decodePeopleVotes =
-    Json.Decode.list
-        (Json.Decode.map2 PeopleVote
-            (Json.Decode.field "category_id" Json.Decode.int
-                |> Json.Decode.map Category.fromId
-            )
-            (Json.Decode.field "count" Json.Decode.int)
-        )
-
-
-getVotes : String -> String -> Http.Request PeopleAndRobotVotes
+getVotes : String -> String -> Http.Request VotesResponse
 getVotes url title =
-    Http.get ("https://fake-news-detector-api.herokuapp.com/votes?url=" ++ encodeUri url ++ "&title=" ++ encodeUri title) decodePeopleAndRobotVotes
+    Http.get ("https://fake-news-detector-api.herokuapp.com/votes?url=" ++ encodeUri url ++ "&title=" ++ encodeUri title) decodeVotesResponse
 
 
 encodeNewVote : String -> String -> String -> Category -> Json.Encode.Value
