@@ -1,7 +1,7 @@
 port module StoryVotes exposing (..)
 
 import Data.Category as Category exposing (Category)
-import Data.Votes as Votes exposing (PeopleAndRobotVotes, PeopleVote)
+import Data.Votes as Votes exposing (PeopleVote, RobotVote, VerifiedVote, VotesResponse)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (onClickStopPropagation)
@@ -13,7 +13,7 @@ import Stylesheet exposing (..)
 
 
 type alias Model =
-    { url : String, title : String, votes : WebData PeopleAndRobotVotes }
+    { url : String, title : String, votes : WebData VotesResponse }
 
 
 type alias Flags =
@@ -22,7 +22,7 @@ type alias Flags =
 
 type Msg
     = OpenFlagPopup
-    | VotesResponse (WebData PeopleAndRobotVotes)
+    | VotesResponse (WebData VotesResponse)
     | AddVote { categoryId : Int }
 
 
@@ -89,7 +89,7 @@ update msg model =
                 updatedVotes =
                     model.votes
                         |> RemoteData.map (\votes -> { votes | people = peopleVotes })
-                        |> RemoteData.withDefault { robot = [], people = peopleVotes }
+                        |> RemoteData.withDefault { verified = Nothing, robot = [], people = peopleVotes }
             in
             ( { model | votes = Success updatedVotes }, Cmd.none )
 
@@ -109,55 +109,63 @@ view model =
 
 flagButtonAndVotes : Model -> Element Classes variation Msg
 flagButtonAndVotes model =
+    let
+        viewVerifiedVote vote =
+            viewVote (Category.toEmoji vote.category) "" vote.category "(verificado)"
+    in
     column General
         [ spacing 5, padding 5, minWidth (px 130) ]
-        [ button Button [ padding 4, onClickStopPropagation OpenFlagPopup ] (text "🏴 Sinalizar")
-        , case model.votes of
+        (case model.votes of
             Success votes ->
-                viewVotes votes
+                case votes.verified of
+                    Just vote ->
+                        [ viewVerifiedVote vote ]
+
+                    Nothing ->
+                        [ flagButton model, viewVotes votes ]
 
             Failure _ ->
-                el VoteCountItem [ padding 6 ] (text "erro ao carregar")
+                [ flagButton model
+                , el VoteCountItem [ padding 6 ] (text "erro ao carregar")
+                ]
 
             _ ->
-                empty
-        ]
+                [ flagButton model ]
+        )
 
 
-viewVotes : PeopleAndRobotVotes -> Element Classes variation Msg
+flagButton : Model -> Element Classes variation Msg
+flagButton model =
+    button Button [ padding 4, onClickStopPropagation OpenFlagPopup ] (text "🏴 Sinalizar")
+
+
+viewVotes : VotesResponse -> Element Classes variation Msg
 viewVotes votes =
+    let
+        viewRobotVote ( category, chance ) =
+            viewVote "\x1F916" (toString chance ++ "%") category ""
+
+        viewPeopleVote vote =
+            viewVote (Category.toEmoji vote.category) (toString vote.count) vote.category ""
+    in
     column NoStyle
         [ spacing 5 ]
         [ case Votes.bestRobotGuess votes.robot of
-            Just ( category, chance ) ->
-                row VoteCountItem
-                    [ padding 6, spacing 5, height (px 26) ]
-                    [ el VoteEmoji [ moveUp 5 ] (text "\x1F916")
-                    , text (toString chance ++ "%")
-                    , text (Category.toName category)
-                    ]
+            Just bestGuess ->
+                viewRobotVote bestGuess
 
             Nothing ->
                 empty
-        , column NoStyle [ spacing 5 ] (List.map viewPeopleVotes votes.people)
+        , column NoStyle [ spacing 5 ] (List.map viewPeopleVote votes.people)
         ]
 
 
-viewRobotVotes : PeopleVote -> Element Classes variation Msg
-viewRobotVotes voteCount =
+viewVote : String -> String -> Category -> String -> Element Classes variation msg
+viewVote icon preText category postText =
     row VoteCountItem
         [ padding 6, spacing 5, height (px 26) ]
-        [ el VoteEmoji [ moveUp 4 ] (text (Category.toEmoji voteCount.category))
-        , text (toString voteCount.count)
-        , text (Category.toName voteCount.category)
-        ]
-
-
-viewPeopleVotes : PeopleVote -> Element Classes variation Msg
-viewPeopleVotes voteCount =
-    row VoteCountItem
-        [ padding 6, spacing 5, height (px 26) ]
-        [ el VoteEmoji [ moveUp 4 ] (text (Category.toEmoji voteCount.category))
-        , text (toString voteCount.count)
-        , text (Category.toName voteCount.category)
+        [ el VoteEmoji [ moveUp 4 ] (text icon)
+        , text preText
+        , text (Category.toName category)
+        , text postText
         ]
