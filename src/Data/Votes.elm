@@ -2,7 +2,8 @@ module Data.Votes exposing (..)
 
 import Data.Category as Category exposing (..)
 import Http exposing (encodeUri)
-import Json.Decode
+import Json.Decode exposing (Decoder, float, int, list, nullable)
+import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
 import List.Extra
 
@@ -23,41 +24,30 @@ type alias VotesResponse =
     { verified : Maybe VerifiedVote, robot : List RobotVote, people : List PeopleVote }
 
 
-decodeVotesResponse : Json.Decode.Decoder VotesResponse
+decodeVotesResponse : Decoder VotesResponse
 decodeVotesResponse =
-    Json.Decode.map3 VotesResponse
-        (Json.Decode.field "verified" decodeVerifiedVote)
-        (Json.Decode.field "robot" decodeRobotVotes)
-        (Json.Decode.field "people" decodePeopleVotes)
+    let
+        decodeCategory =
+            required "category_id" (Json.Decode.map Category.fromId int)
 
+        decodeVerifiedVote =
+            decode VerifiedVote
+                |> decodeCategory
 
-decodeVerifiedVote : Json.Decode.Decoder (Maybe VerifiedVote)
-decodeVerifiedVote =
-    Json.Decode.maybe (Json.Decode.map VerifiedVote decodeCategory)
+        decodeRobotVote =
+            decode RobotVote
+                |> decodeCategory
+                |> required "chance" float
 
-
-decodeRobotVotes : Json.Decode.Decoder (List RobotVote)
-decodeRobotVotes =
-    Json.Decode.list
-        (Json.Decode.map2 RobotVote
-            decodeCategory
-            (Json.Decode.field "chance" Json.Decode.float)
-        )
-
-
-decodePeopleVotes : Json.Decode.Decoder (List PeopleVote)
-decodePeopleVotes =
-    Json.Decode.list
-        (Json.Decode.map2 PeopleVote
-            decodeCategory
-            (Json.Decode.field "count" Json.Decode.int)
-        )
-
-
-decodeCategory : Json.Decode.Decoder Category
-decodeCategory =
-    Json.Decode.field "category_id" Json.Decode.int
-        |> Json.Decode.map Category.fromId
+        decodePeopleVote =
+            decode PeopleVote
+                |> decodeCategory
+                |> required "count" int
+    in
+    decode VotesResponse
+        |> required "verified" (nullable decodeVerifiedVote)
+        |> required "robot" (list decodeRobotVote)
+        |> required "people" (list decodePeopleVote)
 
 
 getVotes : String -> String -> Http.Request VotesResponse
