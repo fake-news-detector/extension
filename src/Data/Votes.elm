@@ -15,24 +15,32 @@ type alias RobotVote =
     { category : Category, chance : Float }
 
 
-type alias PeopleAndRobotVotes =
-    { robot : List RobotVote, people : List PeopleVote }
+type alias VerifiedVote =
+    { category : Category }
 
 
-decodePeopleAndRobotVotes : Json.Decode.Decoder PeopleAndRobotVotes
-decodePeopleAndRobotVotes =
-    Json.Decode.map2 PeopleAndRobotVotes
+type alias VotesResponse =
+    { verified : Maybe VerifiedVote, robot : List RobotVote, people : List PeopleVote }
+
+
+decodeVotesResponse : Json.Decode.Decoder VotesResponse
+decodeVotesResponse =
+    Json.Decode.map3 VotesResponse
+        (Json.Decode.field "verified" decodeVerifiedVote)
         (Json.Decode.field "robot" decodeRobotVotes)
         (Json.Decode.field "people" decodePeopleVotes)
+
+
+decodeVerifiedVote : Json.Decode.Decoder (Maybe VerifiedVote)
+decodeVerifiedVote =
+    Json.Decode.maybe (Json.Decode.map VerifiedVote decodeCategory)
 
 
 decodeRobotVotes : Json.Decode.Decoder (List RobotVote)
 decodeRobotVotes =
     Json.Decode.list
         (Json.Decode.map2 RobotVote
-            (Json.Decode.field "category_id" Json.Decode.int
-                |> Json.Decode.map Category.fromId
-            )
+            decodeCategory
             (Json.Decode.field "chance" Json.Decode.float)
         )
 
@@ -41,16 +49,20 @@ decodePeopleVotes : Json.Decode.Decoder (List PeopleVote)
 decodePeopleVotes =
     Json.Decode.list
         (Json.Decode.map2 PeopleVote
-            (Json.Decode.field "category_id" Json.Decode.int
-                |> Json.Decode.map Category.fromId
-            )
+            decodeCategory
             (Json.Decode.field "count" Json.Decode.int)
         )
 
 
-getVotes : String -> String -> Http.Request PeopleAndRobotVotes
+decodeCategory : Json.Decode.Decoder Category
+decodeCategory =
+    Json.Decode.field "category_id" Json.Decode.int
+        |> Json.Decode.map Category.fromId
+
+
+getVotes : String -> String -> Http.Request VotesResponse
 getVotes url title =
-    Http.get ("https://fake-news-detector-api.herokuapp.com/votes?url=" ++ encodeUri url ++ "&title=" ++ encodeUri title) decodePeopleAndRobotVotes
+    Http.get ("https://fake-news-detector-api.herokuapp.com/votes?url=" ++ encodeUri url ++ "&title=" ++ encodeUri title) decodeVotesResponse
 
 
 encodeNewVote : String -> String -> String -> Category -> Json.Encode.Value
