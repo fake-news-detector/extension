@@ -9,6 +9,7 @@ import Element.Input as Input
 import Helpers exposing (humanizeError, onClickStopPropagation)
 import Html exposing (Html)
 import Html.Attributes
+import Keyboard
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
@@ -50,6 +51,7 @@ type Msg
     | SelectCategory Category
     | SubmitFlag
     | SubmitResponse (WebData ())
+    | KeyboardDown Keyboard.KeyCode
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -90,6 +92,13 @@ update msg model =
             else
                 ( { model | submitResponse = response }, Cmd.none )
 
+        KeyboardDown code ->
+            -- 27 is the escape keycode
+            if code == 27 then
+                update ClosePopup model
+            else
+                ( model, Cmd.none )
+
 
 type alias Flags =
     { uuid : String, isExtensionPopup : Bool }
@@ -107,7 +116,10 @@ main =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    openFlagPopup OpenPopup
+    Sub.batch
+        [ openFlagPopup OpenPopup
+        , Keyboard.downs KeyboardDown
+        ]
 
 
 view : Model -> Html Msg
