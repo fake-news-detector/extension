@@ -1,6 +1,6 @@
 ----
 
-[Pre-Requirements](#pre-requirements) | [Running](#running) | [Testing](#testing) | [Debugging](#debugging) | [Formatting](#formatting)
+[Pre-Requirements](#pre-requirements) | [Running](#running) | [Testing](#testing) | [Debugging](#debugging) | [Formatting](#formatting) | [Publishing](#publishing)
 
 ----
 
@@ -19,6 +19,8 @@ You need to have installed:
 - [Firefox Quantum](https://www.mozilla.org/en-US/firefox/quantum/)
 
 If you don't know elm, don't worry, you can contribute without it, but if you want to know more, the best place to start is the [official guide](https://guide.elm-lang.org/).
+
+Also, this extension uses WebExtensions, which is the new standard for developing cross-browsers extensions, you can learn more about it from the [Mozilla Docs](https://developer.mozilla.org/en-US/Add-ons/WebExtensions), they have a couple nice examples that makes it easy to learn.
 
 ## Running
 
@@ -74,3 +76,11 @@ For automatically format the source code, we use two opinionated tools:
 They both have good integrations with almost every code editor, you should install them on your editor because they format the code automatically, keeping a standard across the codebase.
 
 Also, we add no configuration to them, just install the plugins and use the standard behaviours, this way we eliminate the discussions about formatting on PRs.
+
+## Publishing
+
+The extension is published on Chrome Webstore and Mozilla Addons.
+
+The publishing is automatically done to Chrome Webstore, you just need to bump the version on the `manifest.json` file. After merging to master [the CircleCI pipeline](https://circleci.com/gh/fake-news-detector/extension) will build the changes and publish it.
+
+But, for Firefox, it still has to be published manually, so remember to inform the maintainers if your change needs a new publishing.
