@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Fake News Detector",
-  "version": "0.7",
+  "version": "0.8",
   "description":
     "Allows users to flag you newsfeed links as fake news, click baits, and more.",
   "homepage_url": "https://fake-news-detector.github.io/",
@@ -9,11 +9,21 @@
     "48": "icons/trump-48.png",
     "96": "icons/trump-96.png"
   },
-  "permissions": ["*://fake-news-detector-api.herokuapp.com/*", "webRequest"],
+  "permissions": [
+    "*://fake-news-detector-api.herokuapp.com/*",
+    "webRequest",
+    "activeTab"
+  ],
   "content_scripts": [
     {
       "matches": ["*://*.facebook.com/*", "*://*.twitter.com/*"],
       "js": ["dist/bundle.js"]
     }
-  ]
+  ],
+  "browser_action": {
+    "default_icon": "icons/trump-48.png",
+    "default_title": "Fake News Detector",
+    "default_popup": "src/index.html"
+  },
+  "web_accessible_resources": ["dist/bundle.js"]
 }

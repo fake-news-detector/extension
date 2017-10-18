@@ -26,7 +26,9 @@ stylesheet : Style.StyleSheet Classes variation
 stylesheet =
     styleSheet
         [ style General
-            [ Font.size 12
+            [ -- source: https://www.smashingmagazine.com/2015/11/using-system-ui-fonts-practical-guide/
+              Font.typeface (List.map Font.font [ "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "sans-serif" ])
+            , Font.size 12
             ]
         , style Button
             [ Color.text (rgb 75 79 86)
