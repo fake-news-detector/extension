@@ -6,16 +6,15 @@
 Fake News Detector Web Extension
 ========
 
-# How to run
+The Fake News Detector is a web extension for Chrome and Firefox that allows you to detect and classify news directly from your Facebook and Twitter feed as Legitimate, Fake News, Click Bait, Extremely Biased or Satire.
 
-For developing the extension, install the latest version of firefox, then:
+You can read more about it on [fake-news-detector.github.io](https://fake-news-detector.github.io/)
 
-```
-npm install
-npm start
-```
+# Contributing
 
-Now go to `facebook.com`, sign in and scroll for seeing it on some news.
+If you are a programmer and want to help the project, you can fork it and run on your machine, for more details, read the [CONTRIBUTING.md](https://github.com/fake-news-detector/extension/blob/master/CONTRIBUTING.md) guide.
+
+If you are not a programmer, no worries, all help is welcome, check out [the issues](https://github.com/fake-news-detector/extension/issues) (or create new ones) for anything you can help with.
 
 # Credits
 
