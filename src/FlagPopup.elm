@@ -138,10 +138,22 @@ popup model =
         (if model.isExtensionPopup then
             modalContents model
          else
-            screen <|
-                el Overlay
-                    [ width (percent 100), height (percent 100) ]
-                    (modal NoStyle [ center, verticalCenter ] (modalContents model))
+            row NoStyle
+                []
+                [ el Overlay
+                    [ width (percent 100)
+                    , minHeight (percent 100)
+                    , inlineStyle [ ( "position", "fixed" ), ( "z-index", "999" ) ]
+                    , onClick ClosePopup
+                    ]
+                    empty
+                , modal NoStyle
+                    [ center
+                    , verticalCenter
+                    , inlineStyle [ ( "z-index", "998" ) ]
+                    ]
+                    (modalContents model)
+                ]
         )
 
 
