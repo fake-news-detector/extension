@@ -23,7 +23,7 @@
   "browser_action": {
     "default_icon": "icons/trump-48.png",
     "default_title": "Fake News Detector",
-    "default_popup": "src/index.html"
+    "default_popup": "dist/index.html"
   },
   "web_accessible_resources": ["dist/bundle.js"]
 }

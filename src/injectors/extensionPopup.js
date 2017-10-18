@@ -1,3 +1,5 @@
+import browser from "webextension-polyfill";
+
 const extensionPopup = document.getElementById("fnd-extension-popup");
 
 export const isExtensionPopup = !!extensionPopup;
