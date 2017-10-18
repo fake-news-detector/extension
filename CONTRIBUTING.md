@@ -1,6 +1,6 @@
 ----
 
-[Pre-Requirements](#pre-requirements) | [Running](#running) | [Testing](#testing) | [Debugging](#debugging) | [Formatting](#formatting) | [Publishing](#publishing)
+[Pre-Requirements](#pre-requirements) | [Running](#running) | [Tech Stack](#tech-stack) | [Testing](#testing) | [Debugging](#debugging) | [Formatting](#formatting) | [Publishing](#publishing)
 
 ----
 
@@ -18,10 +18,6 @@ You need to have installed:
 - elm (run `npm -g install elm`)
 - [Firefox Quantum](https://www.mozilla.org/en-US/firefox/quantum/)
 
-If you don't know elm, don't worry, you can contribute without it, but if you want to know more, the best place to start is the [official guide](https://guide.elm-lang.org/).
-
-Also, this extension uses WebExtensions, which is the new standard for developing cross-browsers extensions, you can learn more about it from the [Mozilla Docs](https://developer.mozilla.org/en-US/Add-ons/WebExtensions), they have a couple nice examples that makes it easy to learn.
-
 ## Running
 
 First install the dependencies
@@ -37,6 +33,18 @@ npm start
 ```
 
 It should fire up firefox for you, now go to `facebook.com` or `twitter.com`, sign in and scroll to see it working on some news.
+
+## Tech Stack
+
+The main languages of the project are Elm and JavaScript. Elm is used for building the UI elements and comunication with the [API](https://github.com/fake-news-detector/api), while JavaScript is the glue for injecting Elm on the pages and accessing WebExtensions functions.
+
+If you don't know Elm, don't worry, you can contribute without it, but if you want to know more, the best place to start is the [official guide](https://guide.elm-lang.org/).
+
+For styling, we use [style-elements](http://package.elm-lang.org/packages/mdgriffith/style-elements/latest), a different but easy-to-learn way to style your UI, that takes advantage from Elm's type safety. You can read [this guide](https://mdgriffith.gitbooks.io/style-elements/content/) to learn more.
+
+The JavaScript code is vanilla ES6, with pretty standard libs (mocha, webpack, babel).
+
+Also, the Fake News Detector uses WebExtensions, which is the new standard for developing cross-browsers extensions. You can learn more about it from the [Mozilla Docs](https://developer.mozilla.org/en-US/Add-ons/WebExtensions), they have a couple nice examples that makes it easy to learn.
 
 ## Testing
 
