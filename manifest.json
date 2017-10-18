@@ -9,11 +9,21 @@
     "48": "icons/trump-48.png",
     "96": "icons/trump-96.png"
   },
-  "permissions": ["*://fake-news-detector-api.herokuapp.com/*", "webRequest"],
+  "permissions": [
+    "*://fake-news-detector-api.herokuapp.com/*",
+    "webRequest",
+    "activeTab"
+  ],
   "content_scripts": [
     {
       "matches": ["*://*.facebook.com/*", "*://*.twitter.com/*"],
       "js": ["dist/bundle.js"]
     }
-  ]
+  ],
+  "browser_action": {
+    "default_icon": "icons/trump-48.png",
+    "default_title": "Fake News Detector",
+    "default_popup": "src/index.html"
+  },
+  "web_accessible_resources": ["dist/bundle.js"]
 }

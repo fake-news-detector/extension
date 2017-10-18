@@ -8,6 +8,7 @@ import Element.Events exposing (..)
 import Element.Input as Input
 import Helpers exposing (humanizeError, onClickStopPropagation)
 import Html exposing (Html)
+import Html.Attributes
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
@@ -15,6 +16,7 @@ import Stylesheet exposing (..)
 type alias Model =
     { isOpen : Bool
     , uuid : String
+    , isExtensionPopup : Bool
     , url : String
     , title : String
     , selectedCategory : Maybe Category
@@ -26,6 +28,7 @@ init : Flags -> ( Model, Cmd Msg )
 init flags =
     ( { isOpen = False
       , uuid = flags.uuid
+      , isExtensionPopup = flags.isExtensionPopup
       , url = ""
       , title = ""
       , selectedCategory = Nothing
@@ -56,7 +59,7 @@ update msg model =
             ( { model | isOpen = True, url = url, title = title }, Cmd.none )
 
         ClosePopup ->
-            init { uuid = model.uuid }
+            init { uuid = model.uuid, isExtensionPopup = model.isExtensionPopup }
 
         SelectCategory category ->
             ( { model | selectedCategory = Just category }, Cmd.none )
@@ -89,7 +92,7 @@ update msg model =
 
 
 type alias Flags =
-    { uuid : String }
+    { uuid : String, isExtensionPopup : Bool }
 
 
 main : Program Flags Model Msg
@@ -109,26 +112,38 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    Element.layout stylesheet (popup model)
+    Html.div
+        [ Html.Attributes.style
+            [ ( "float", "right" ) ]
+        ]
+        [ Element.layout stylesheet (popup model)
+        ]
 
 
 popup : Model -> Element Classes variation Msg
 popup model =
     when model.isOpen
-        (screen <|
-            el Overlay
-                [ width (percent 100), height (percent 100) ]
-                (modal Popup
-                    [ center, verticalCenter, padding 20, width (px 450) ]
-                    (column General
-                        [ spacing 15 ]
-                        [ h1 Title [] (text "Sinalizar conteúdo")
-                        , paragraph NoStyle [] [ text "Qual das opções abaixo define melhor este conteúdo?" ]
-                        , flagForm model
-                        ]
-                        |> onRight [ button CloseButton [ onClick ClosePopup, padding 8, moveLeft 8, moveUp 20 ] (text "x") ]
-                    )
-                )
+        (if model.isExtensionPopup then
+            modalContents model
+         else
+            screen <|
+                el Overlay
+                    [ width (percent 100), height (percent 100) ]
+                    (modal NoStyle [ center, verticalCenter ] (modalContents model))
+        )
+
+
+modalContents : Model -> Element Classes variation Msg
+modalContents model =
+    el Popup
+        [ padding 20, width (px 450) ]
+        (column General
+            [ spacing 15 ]
+            [ h1 Title [] (text "Sinalizar conteúdo")
+            , paragraph NoStyle [] [ text "Qual das opções abaixo define melhor este conteúdo?" ]
+            , flagForm model
+            ]
+            |> onRight [ button CloseButton [ onClick ClosePopup, padding 8, moveLeft 8, moveUp 20 ] (text "x") ]
         )
 
 

@@ -13,11 +13,11 @@ import Stylesheet exposing (..)
 
 
 type alias Model =
-    { url : String, title : String, votes : WebData VotesResponse }
+    { url : String, title : String, isExtensionPopup : Bool, votes : WebData VotesResponse }
 
 
 type alias Flags =
-    { url : String, title : String }
+    { url : String, title : String, isExtensionPopup : Bool }
 
 
 type Msg
@@ -44,7 +44,7 @@ main =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { url = flags.url, title = flags.title, votes = NotAsked }
+    ( { url = flags.url, title = flags.title, isExtensionPopup = flags.isExtensionPopup, votes = NotAsked }
     , Votes.getVotes flags.url flags.title
         |> RemoteData.sendRequest
         |> Cmd.map VotesResponse
@@ -98,10 +98,14 @@ view : Model -> Html Msg
 view model =
     Html.div
         [ Html.Attributes.style
-            [ ( "position", "absolute" )
-            , ( "right", "0" )
-            , ( "z-index", "1" )
-            ]
+            (if model.isExtensionPopup then
+                [ ( "float", "right" ) ]
+             else
+                [ ( "position", "absolute" )
+                , ( "right", "0" )
+                , ( "z-index", "1" )
+                ]
+            )
         ]
         [ Element.layout stylesheet (flagButtonAndVotes model)
         ]
@@ -112,26 +116,32 @@ flagButtonAndVotes model =
     let
         viewVerifiedVote vote =
             viewVote (Category.toEmoji vote.category) "" vote.category "(verificado)"
+
+        isValidUrl =
+            String.startsWith "http"
     in
-    column General
-        [ spacing 5, padding 5, minWidth (px 130) ]
-        (case model.votes of
-            Success votes ->
-                case votes.verified of
-                    Just vote ->
-                        [ viewVerifiedVote vote ]
+    if isValidUrl model.url then
+        column General
+            [ spacing 5, padding 5, minWidth (px 130) ]
+            (case model.votes of
+                Success votes ->
+                    case votes.verified of
+                        Just vote ->
+                            [ viewVerifiedVote vote ]
 
-                    Nothing ->
-                        [ flagButton model, viewVotes votes ]
+                        Nothing ->
+                            [ flagButton model, viewVotes votes ]
 
-            Failure _ ->
-                [ flagButton model
-                , el VoteCountItem [ padding 6 ] (text "erro ao carregar")
-                ]
+                Failure _ ->
+                    [ flagButton model
+                    , el VoteCountItem [ padding 6 ] (text "erro ao carregar")
+                    ]
 
-            _ ->
-                [ flagButton model ]
-        )
+                _ ->
+                    [ flagButton model ]
+            )
+    else
+        el General [ padding 5 ] (text <| "Url inválida: " ++ model.url)
 
 
 flagButton : Model -> Element Classes variation Msg
