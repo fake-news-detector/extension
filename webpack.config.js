@@ -1,5 +1,9 @@
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require("path");
+
+const prodPlugins =
+  process.env.NODE_ENV === "production" ? [new UglifyJSPlugin()] : [];
 
 module.exports = {
   entry: "./src/index.js",
@@ -13,12 +17,10 @@ module.exports = {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
         use: ["elm-webpack-loader"]
-      },
-      {
-        test: /\.js$/,
-        loader: "babel-loader"
       }
     ]
   },
-  plugins: [new CopyWebpackPlugin([{ from: "src/index.html" }])]
+  plugins: [new CopyWebpackPlugin([{ from: "src/index.html" }])].concat(
+    prodPlugins
+  )
 };
