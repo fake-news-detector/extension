@@ -11,7 +11,9 @@ import uuidv4 from "uuid/v4";
 const uuid = localStorage.getItem("uuid") || uuidv4();
 localStorage.setItem("uuid", uuid);
 
-const popup = FlagPopup.fullscreen({ uuid, isExtensionPopup });
+const language = navigator.language || "en";
+
+const popup = FlagPopup.fullscreen({ uuid, isExtensionPopup, language });
 
 let storyVotes = {};
 const onInject = ({ elem, url, title }) => {

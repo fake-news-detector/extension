@@ -10,6 +10,8 @@ import Helpers exposing (humanizeError, onClickStopPropagation)
 import Html exposing (Html)
 import Html.Attributes
 import Keyboard
+import Locale.Locale as Locale exposing (translate)
+import Locale.Types exposing (Language, LocaleKey(..))
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
@@ -22,6 +24,7 @@ type alias Model =
     , title : String
     , selectedCategory : Maybe Category
     , submitResponse : WebData ()
+    , language : Language
     }
 
 
@@ -34,6 +37,7 @@ init flags =
       , title = ""
       , selectedCategory = Nothing
       , submitResponse = NotAsked
+      , language = Locale.fromCode flags.language
       }
     , Cmd.none
     )
@@ -61,7 +65,7 @@ update msg model =
             ( { model | isOpen = True, url = url, title = title }, Cmd.none )
 
         ClosePopup ->
-            init { uuid = model.uuid, isExtensionPopup = model.isExtensionPopup }
+            init { uuid = model.uuid, isExtensionPopup = model.isExtensionPopup, language = Locale.toCode model.language }
 
         SelectCategory category ->
             ( { model | selectedCategory = Just category }, Cmd.none )
@@ -101,7 +105,7 @@ update msg model =
 
 
 type alias Flags =
-    { uuid : String, isExtensionPopup : Bool }
+    { uuid : String, isExtensionPopup : Bool, language : String }
 
 
 main : Program Flags Model Msg
@@ -162,7 +166,7 @@ modalContents model =
         [ padding 20, width (px 450) ]
         (column General
             [ spacing 15 ]
-            [ h1 Title [] (text "Sinalizar conteúdo")
+            [ h1 Title [] (text <| translate model.language TReportContent)
             , paragraph NoStyle [] [ text "Qual das opções abaixo define melhor este conteúdo?" ]
             , flagForm model
             ]
@@ -215,7 +219,7 @@ flagForm model =
                 , button BlueButton
                     [ padding 5, onClickStopPropagation SubmitFlag ]
                     (if isLoading model.submitResponse then
-                        text "Carregando..."
+                        text <| translate model.language TLoading
                      else
                         text "Sinalizar"
                     )
