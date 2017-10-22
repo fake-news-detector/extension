@@ -7,6 +7,7 @@ type Category
     | ClickBait
     | ExtremelyBiased
     | Satire
+    | NotNews
 
 
 fromId : Int -> Category
@@ -26,6 +27,9 @@ fromId id =
 
         5 ->
             Satire
+
+        6 ->
+            NotNews
 
         _ ->
             Legitimate
@@ -49,6 +53,9 @@ toId category =
         Satire ->
             5
 
+        NotNews ->
+            6
+
 
 toEmoji : Category -> String
 toEmoji category =
@@ -68,6 +75,9 @@ toEmoji category =
         Satire ->
             "\x1F921"
 
+        NotNews ->
+            "🏳️"
+
 
 toName : Category -> String
 toName category =
@@ -85,4 +95,7 @@ toName category =
             "tendencioso"
 
         Satire ->
-            "Sátira"
+            "sátira"
+
+        NotNews ->
+            "não é notícia"
