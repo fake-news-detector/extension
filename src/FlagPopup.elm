@@ -198,6 +198,9 @@ flagForm model =
                     , flagChoice Satire
                         "Sátira"
                         "Conteúdo propositalmente falso, para fins humorísticos"
+                    , flagChoice NotNews
+                        "Não é notícia"
+                        "Meme, conteúdo pessoal ou qualquer outra coisa não jornalística"
                     ]
                 }
             , case model.submitResponse of
