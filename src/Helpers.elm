@@ -4,6 +4,9 @@ import Element exposing (..)
 import Element.Events exposing (..)
 import Http exposing (Error(..))
 import Json.Decode
+import Locale.Languages exposing (Language)
+import Locale.Locale as Locale exposing (translate)
+import Locale.Words as Words exposing (LocaleKey)
 
 
 onClickStopPropagation : msg -> Element.Attribute variation msg
@@ -13,17 +16,17 @@ onClickStopPropagation msg =
         (Json.Decode.succeed msg)
 
 
-humanizeError : Http.Error -> String
-humanizeError error =
+humanizeError : Language -> Http.Error -> String
+humanizeError language error =
     case error of
         BadStatus data ->
             data.body
 
         Timeout ->
-            "Timeout: operação demorou tempo demais"
+            Locale.translate language Words.TimeoutError
 
         NetworkError ->
-            "Erro de rede: verifique sua conexão à internet"
+            Locale.translate language Words.NetworkError
 
         BadPayload _ data ->
             data.body
