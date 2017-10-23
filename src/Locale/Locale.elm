@@ -1,4 +1,9 @@
-module Locale.Locale exposing (..)
+module Locale.Locale
+    exposing
+        ( fromCodeArray
+        , toCodeArray
+        , translate
+        )
 
 import Locale.English as English
 import Locale.Languages exposing (Language(..))
@@ -6,27 +11,23 @@ import Locale.Portuguese as Portuguese
 import Locale.Words exposing (LocaleKey)
 
 
-fromCode : String -> Language
-fromCode code =
-    case code of
-        "pt-BR" ->
-            Portuguese
-
-        "en" ->
-            English
-
-        _ ->
-            English
+fromCodeArray : List String -> Language
+fromCodeArray codes =
+    let
+        t =
+            Debug.log "Test" codes
+    in
+    extractPreferredLanguage codes
 
 
-toCode : Language -> String
-toCode language =
+toCodeArray : Language -> List String
+toCodeArray language =
     case language of
         Portuguese ->
-            "pt-BR"
+            [ "pt" ]
 
         English ->
-            "en"
+            [ "en" ]
 
 
 translate : Language -> LocaleKey -> String
@@ -37,3 +38,18 @@ translate language localeValue =
 
         Portuguese ->
             Portuguese.translate localeValue
+
+
+extractPreferredLanguage : List String -> Language
+extractPreferredLanguage codes =
+    let
+        -- Only the first 2 chars matters (e.g. "pt-BR" -> "pt")
+        convertedCodes =
+            List.map
+                (\code -> String.left 2 code)
+                codes
+    in
+    if List.member "pt" convertedCodes then
+        Portuguese
+    else
+        English

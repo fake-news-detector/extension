@@ -38,7 +38,7 @@ init flags =
       , title = ""
       , selectedCategory = Nothing
       , submitResponse = NotAsked
-      , language = Locale.fromCode flags.language
+      , language = Locale.fromCodeArray flags.languages
       }
     , Cmd.none
     )
@@ -66,7 +66,11 @@ update msg model =
             ( { model | isOpen = True, url = url, title = title }, Cmd.none )
 
         ClosePopup ->
-            init { uuid = model.uuid, isExtensionPopup = model.isExtensionPopup, language = Locale.toCode model.language }
+            init
+                { uuid = model.uuid
+                , isExtensionPopup = model.isExtensionPopup
+                , languages = Locale.toCodeArray model.language
+                }
 
         SelectCategory category ->
             ( { model | selectedCategory = Just category }, Cmd.none )
@@ -106,7 +110,7 @@ update msg model =
 
 
 type alias Flags =
-    { uuid : String, isExtensionPopup : Bool, language : String }
+    { uuid : String, isExtensionPopup : Bool, languages : List String }
 
 
 main : Program Flags Model Msg
