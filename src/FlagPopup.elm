@@ -12,7 +12,7 @@ import Html.Attributes
 import Keyboard
 import Locale.Languages exposing (Language)
 import Locale.Locale as Locale exposing (translate)
-import Locale.Words as Words exposing (LocaleKey(..))
+import Locale.Words as Words exposing (LocaleKey)
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
@@ -167,12 +167,16 @@ popup model =
 
 modalContents : Model -> Element Classes variation Msg
 modalContents model =
+    let
+        translate =
+            Locale.translate model.language
+    in
     el Popup
         [ padding 20, width (px 450) ]
         (column General
             [ spacing 15 ]
-            [ h1 Title [] (text <| translate model.language Words.ReportContent)
-            , paragraph NoStyle [] [ text <| translate model.language Words.ReportQuestion ]
+            [ h1 Title [] (text <| translate Words.ReportContent)
+            , paragraph NoStyle [] [ text <| translate Words.ReportQuestion ]
             , flagForm model
             ]
             |> onRight [ button CloseButton [ onClick ClosePopup, padding 8, moveLeft 8, moveUp 20 ] (text "x") ]
@@ -181,6 +185,10 @@ modalContents model =
 
 flagForm : Model -> Element Classes variation Msg
 flagForm model =
+    let
+        translate =
+            Locale.translate model.language
+    in
     node "form" <|
         column NoStyle
             [ spacing 15 ]
@@ -193,23 +201,23 @@ flagForm model =
                 , options = []
                 , choices =
                     [ flagChoice Legitimate
-                        "Legítimo"
-                        "Conteúdo honesto, não tenta enganar ninguém, de forma alguma"
+                        (translate Words.Legitimate)
+                        (translate Words.LegitimateDescription)
                     , flagChoice FakeNews
-                        "Fake News"
-                        "Notícia falsa, engana o leitor, espalha boatos"
+                        (translate Words.FakeNews)
+                        (translate Words.FakeNewsDescription)
                     , flagChoice ClickBait
-                        "Click Bait"
-                        "Título apelativo, não explica a notícia completa de propósito apenas para ganhar cliques"
+                        (translate Words.ClickBait)
+                        (translate Words.ClickBaitDescription)
                     , flagChoice ExtremelyBiased
-                        "Extremamente Tendencioso"
-                        "Mostra apenas um lado da história, interpreta de forma exagerada alguns pontos, sem ponderamento com outros"
+                        (translate Words.ExtremelyBiased)
+                        (translate Words.ExtremelyBiasedDescription)
                     , flagChoice Satire
-                        "Sátira"
-                        "Conteúdo propositalmente falso, para fins humorísticos"
+                        (translate Words.Satire)
+                        (translate Words.SatireDescription)
                     , flagChoice NotNews
-                        "Não é notícia"
-                        "Meme, conteúdo pessoal ou qualquer outra coisa não jornalística"
+                        (translate Words.NotNews)
+                        (translate Words.NotNewsDescription)
                     ]
                 }
             , case model.submitResponse of
@@ -224,9 +232,9 @@ flagForm model =
                 , button BlueButton
                     [ padding 5, onClickStopPropagation SubmitFlag ]
                     (if isLoading model.submitResponse then
-                        text <| translate model.language Words.Loading
+                        text <| translate Words.Loading
                      else
-                        text "Sinalizar"
+                        text <| translate Words.ReportButton
                     )
                 ]
             ]
@@ -238,5 +246,5 @@ flagChoice category title description =
         Element.column NoStyle
             [ spacing 12 ]
             [ bold title
-            , paragraph NoStyle [] [ text description ]
+            , paragraph NoStyle [] [ text <| description ]
             ]
