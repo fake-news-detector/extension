@@ -222,7 +222,7 @@ flagForm model =
                 }
             , case model.submitResponse of
                 Failure err ->
-                    paragraph ErrorMessage [ padding 6 ] [ text (humanizeError err) ]
+                    paragraph ErrorMessage [ padding 6 ] [ text (humanizeError model.language err) ]
 
                 _ ->
                     empty

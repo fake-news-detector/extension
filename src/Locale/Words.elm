@@ -22,3 +22,5 @@ type LocaleKey
     | FlagReportButton
     | InvalidUrlError
     | LoadingError
+    | TimeoutError
+    | NetworkError

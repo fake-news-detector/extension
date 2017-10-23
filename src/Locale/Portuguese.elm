@@ -65,3 +65,9 @@ translate localeValue =
 
         LoadingError ->
             "erro ao carregar"
+
+        TimeoutError ->
+            "Timeout: operação demorou tempo demais"
+
+        NetworkError ->
+            "Erro de rede: verifique sua conexão à internet"
