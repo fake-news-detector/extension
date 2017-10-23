@@ -27,7 +27,8 @@ const onInject = ({ elem, url, title }) => {
   const storyVoting = StoryVotes.embed(newNode, {
     url,
     title,
-    isExtensionPopup
+    isExtensionPopup,
+    languages
   });
   storyVoting.ports.openFlagPopup.subscribe(popup.ports.openFlagPopup.send);
   storyVotes[url] = storyVoting;

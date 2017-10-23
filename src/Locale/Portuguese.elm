@@ -53,3 +53,15 @@ translate localeValue =
 
         NotNewsDescription ->
             "Meme, conteúdo pessoal ou qualquer outra coisa não jornalística"
+
+        Verified ->
+            "(verificado)"
+
+        FlagReportButton ->
+            "🏴 Sinalizar"
+
+        InvalidUrlError ->
+            "Url inválida: "
+
+        LoadingError ->
+            "erro ao carregar"

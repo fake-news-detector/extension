@@ -18,3 +18,7 @@ type LocaleKey
     | SatireDescription
     | NotNews
     | NotNewsDescription
+    | Verified
+    | FlagReportButton
+    | InvalidUrlError
+    | LoadingError
