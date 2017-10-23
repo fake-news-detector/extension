@@ -10,8 +10,9 @@ import Helpers exposing (humanizeError, onClickStopPropagation)
 import Html exposing (Html)
 import Html.Attributes
 import Keyboard
+import Locale.Languages exposing (Language)
 import Locale.Locale as Locale exposing (translate)
-import Locale.Types exposing (Language, LocaleKey(..))
+import Locale.Words as Words exposing (LocaleKey(..))
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
@@ -73,7 +74,7 @@ update msg model =
         SubmitFlag ->
             case model.selectedCategory of
                 Just selectedCategory ->
-                    ( { model | submitResponse = Loading }
+                    ( { model | submitResponse = RemoteData.Loading }
                     , Votes.postVote model.uuid model.url model.title selectedCategory
                         |> RemoteData.sendRequest
                         |> Cmd.map SubmitResponse
@@ -166,8 +167,8 @@ modalContents model =
         [ padding 20, width (px 450) ]
         (column General
             [ spacing 15 ]
-            [ h1 Title [] (text <| translate model.language TReportContent)
-            , paragraph NoStyle [] [ text "Qual das opções abaixo define melhor este conteúdo?" ]
+            [ h1 Title [] (text <| translate model.language Words.ReportContent)
+            , paragraph NoStyle [] [ text <| translate model.language Words.ReportQuestion ]
             , flagForm model
             ]
             |> onRight [ button CloseButton [ onClick ClosePopup, padding 8, moveLeft 8, moveUp 20 ] (text "x") ]
@@ -219,7 +220,7 @@ flagForm model =
                 , button BlueButton
                     [ padding 5, onClickStopPropagation SubmitFlag ]
                     (if isLoading model.submitResponse then
-                        text <| translate model.language TLoading
+                        text <| translate model.language Words.Loading
                      else
                         text "Sinalizar"
                     )

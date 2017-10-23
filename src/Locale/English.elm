@@ -1,13 +1,16 @@
 module Locale.English exposing (..)
 
-import Locale.Types exposing (LocaleKey(..))
+import Locale.Words exposing (LocaleKey(..))
 
 
 translate : LocaleKey -> String
 translate localeValue =
     case localeValue of
-        TLoading ->
+        Loading ->
             "Loading..."
 
-        TReportContent ->
+        ReportContent ->
             "Report Content"
+
+        ReportQuestion ->
+            "Which of the following options best defines this content?"

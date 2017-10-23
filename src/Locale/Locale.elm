@@ -1,8 +1,9 @@
 module Locale.Locale exposing (..)
 
 import Locale.English as English
+import Locale.Languages exposing (Language(..))
 import Locale.Portuguese as Portuguese
-import Locale.Types exposing (Language(..), LocaleKey)
+import Locale.Words exposing (LocaleKey)
 
 
 fromCode : String -> Language
