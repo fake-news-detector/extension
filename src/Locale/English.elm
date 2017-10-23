@@ -53,3 +53,15 @@ translate localeValue =
 
         NotNewsDescription ->
             ""
+
+        Verified ->
+            "(verified)"
+
+        FlagReportButton ->
+            "🏴 Report"
+
+        InvalidUrlError ->
+            "Invalid Url: "
+
+        LoadingError ->
+            "loading error"

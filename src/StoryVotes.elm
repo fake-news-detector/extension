@@ -8,16 +8,19 @@ import Helpers exposing (onClickStopPropagation)
 import Html exposing (Html)
 import Html.Attributes
 import List.Extra
+import Locale.Languages exposing (Language)
+import Locale.Locale as Locale exposing (translate)
+import Locale.Words as Words exposing (LocaleKey)
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
 
 type alias Model =
-    { url : String, title : String, isExtensionPopup : Bool, votes : WebData VotesResponse }
+    { url : String, title : String, isExtensionPopup : Bool, votes : WebData VotesResponse, language : Language }
 
 
 type alias Flags =
-    { url : String, title : String, isExtensionPopup : Bool }
+    { url : String, title : String, isExtensionPopup : Bool, languages : List String }
 
 
 type Msg
@@ -44,7 +47,12 @@ main =
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( { url = flags.url, title = flags.title, isExtensionPopup = flags.isExtensionPopup, votes = NotAsked }
+    ( { url = flags.url
+      , title = flags.title
+      , isExtensionPopup = flags.isExtensionPopup
+      , votes = NotAsked
+      , language = Locale.fromCodeArray flags.languages
+      }
     , Votes.getVotes flags.url flags.title
         |> RemoteData.sendRequest
         |> Cmd.map VotesResponse
@@ -114,8 +122,11 @@ view model =
 flagButtonAndVotes : Model -> Element Classes variation Msg
 flagButtonAndVotes model =
     let
+        translate =
+            Locale.translate model.language
+
         viewVerifiedVote vote =
-            viewVote (Category.toEmoji vote.category) "" vote.category "(verificado)"
+            viewVote (Category.toEmoji vote.category) "" vote.category (translate Words.Verified)
 
         isValidUrl =
             String.startsWith "http"
@@ -134,19 +145,21 @@ flagButtonAndVotes model =
 
                 Failure _ ->
                     [ flagButton model
-                    , el VoteCountItem [ padding 6 ] (text "erro ao carregar")
+                    , el VoteCountItem [ padding 6 ] (text <| translate Words.LoadingError)
                     ]
 
                 _ ->
                     [ flagButton model ]
             )
     else
-        el General [ padding 5 ] (text <| "Url inválida: " ++ model.url)
+        el General [ padding 5 ] (text <| translate Words.InvalidUrlError ++ model.url)
 
 
 flagButton : Model -> Element Classes variation Msg
 flagButton model =
-    button Button [ padding 4, onClickStopPropagation OpenFlagPopup ] (text "🏴 Sinalizar")
+    button Button
+        [ padding 4, onClickStopPropagation OpenFlagPopup ]
+        (text <| Locale.translate model.language Words.FlagReportButton)
 
 
 viewVotes : VotesResponse -> Element Classes variation Msg
