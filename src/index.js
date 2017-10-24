@@ -11,7 +11,9 @@ import uuidv4 from "uuid/v4";
 const uuid = localStorage.getItem("uuid") || uuidv4();
 localStorage.setItem("uuid", uuid);
 
-const popup = FlagPopup.fullscreen({ uuid, isExtensionPopup });
+const languages = navigator.languages || ["en"];
+
+const popup = FlagPopup.fullscreen({ uuid, isExtensionPopup, languages });
 
 let storyVotes = {};
 const onInject = ({ elem, url, title }) => {
@@ -25,7 +27,8 @@ const onInject = ({ elem, url, title }) => {
   const storyVoting = StoryVotes.embed(newNode, {
     url,
     title,
-    isExtensionPopup
+    isExtensionPopup,
+    languages
   });
   storyVoting.ports.openFlagPopup.subscribe(popup.ports.openFlagPopup.send);
   storyVotes[url] = storyVoting;
