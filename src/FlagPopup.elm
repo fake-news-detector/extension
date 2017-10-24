@@ -246,5 +246,5 @@ flagChoice category title description =
         Element.column NoStyle
             [ spacing 12 ]
             [ bold title
-            , paragraph NoStyle [] [ text <| description ]
+            , paragraph NoStyle [] [ text description ]
             ]

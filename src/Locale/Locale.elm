@@ -13,10 +13,6 @@ import Locale.Words exposing (LocaleKey)
 
 fromCodeArray : List String -> Language
 fromCodeArray codes =
-    let
-        t =
-            Debug.log "Test" codes
-    in
     extractPreferredLanguage codes
 
 
@@ -46,7 +42,7 @@ extractPreferredLanguage codes =
         -- Only the first 2 chars matters (e.g. "pt-BR" -> "pt")
         convertedCodes =
             List.map
-                (\code -> String.left 2 code)
+                (String.left 2)
                 codes
     in
     if List.member "pt" convertedCodes then
