@@ -10,6 +10,9 @@ import Helpers exposing (humanizeError, onClickStopPropagation)
 import Html exposing (Html)
 import Html.Attributes
 import Keyboard
+import Locale.Languages exposing (Language)
+import Locale.Locale as Locale exposing (translate)
+import Locale.Words as Words exposing (LocaleKey)
 import RemoteData exposing (..)
 import Stylesheet exposing (..)
 
@@ -22,6 +25,7 @@ type alias Model =
     , title : String
     , selectedCategory : Maybe Category
     , submitResponse : WebData ()
+    , language : Language
     }
 
 
@@ -34,6 +38,7 @@ init flags =
       , title = ""
       , selectedCategory = Nothing
       , submitResponse = NotAsked
+      , language = Locale.fromCodeArray flags.languages
       }
     , Cmd.none
     )
@@ -61,7 +66,11 @@ update msg model =
             ( { model | isOpen = True, url = url, title = title }, Cmd.none )
 
         ClosePopup ->
-            init { uuid = model.uuid, isExtensionPopup = model.isExtensionPopup }
+            init
+                { uuid = model.uuid
+                , isExtensionPopup = model.isExtensionPopup
+                , languages = Locale.toCodeArray model.language
+                }
 
         SelectCategory category ->
             ( { model | selectedCategory = Just category }, Cmd.none )
@@ -69,7 +78,7 @@ update msg model =
         SubmitFlag ->
             case model.selectedCategory of
                 Just selectedCategory ->
-                    ( { model | submitResponse = Loading }
+                    ( { model | submitResponse = RemoteData.Loading }
                     , Votes.postVote model.uuid model.url model.title selectedCategory
                         |> RemoteData.sendRequest
                         |> Cmd.map SubmitResponse
@@ -101,7 +110,7 @@ update msg model =
 
 
 type alias Flags =
-    { uuid : String, isExtensionPopup : Bool }
+    { uuid : String, isExtensionPopup : Bool, languages : List String }
 
 
 main : Program Flags Model Msg
@@ -158,12 +167,16 @@ popup model =
 
 modalContents : Model -> Element Classes variation Msg
 modalContents model =
+    let
+        translate =
+            Locale.translate model.language
+    in
     el Popup
         [ padding 20, width (px 450) ]
         (column General
             [ spacing 15 ]
-            [ h1 Title [] (text "Sinalizar conteúdo")
-            , paragraph NoStyle [] [ text "Qual das opções abaixo define melhor este conteúdo?" ]
+            [ h1 Title [] (text <| translate Words.ReportContent)
+            , paragraph NoStyle [] [ text <| translate Words.ReportQuestion ]
             , flagForm model
             ]
             |> onRight [ button CloseButton [ onClick ClosePopup, padding 8, moveLeft 8, moveUp 20 ] (text "x") ]
@@ -172,6 +185,10 @@ modalContents model =
 
 flagForm : Model -> Element Classes variation Msg
 flagForm model =
+    let
+        translate =
+            Locale.translate model.language
+    in
     node "form" <|
         column NoStyle
             [ spacing 15 ]
@@ -184,28 +201,28 @@ flagForm model =
                 , options = []
                 , choices =
                     [ flagChoice Legitimate
-                        "Legítimo"
-                        "Conteúdo honesto, não tenta enganar ninguém, de forma alguma"
+                        (translate Words.Legitimate)
+                        (translate Words.LegitimateDescription)
                     , flagChoice FakeNews
-                        "Fake News"
-                        "Notícia falsa, engana o leitor, espalha boatos"
+                        (translate Words.FakeNews)
+                        (translate Words.FakeNewsDescription)
                     , flagChoice ClickBait
-                        "Click Bait"
-                        "Título apelativo, não explica a notícia completa de propósito apenas para ganhar cliques"
+                        (translate Words.ClickBait)
+                        (translate Words.ClickBaitDescription)
                     , flagChoice ExtremelyBiased
-                        "Extremamente Tendencioso"
-                        "Mostra apenas um lado da história, interpreta de forma exagerada alguns pontos, sem ponderamento com outros"
+                        (translate Words.ExtremelyBiased)
+                        (translate Words.ExtremelyBiasedDescription)
                     , flagChoice Satire
-                        "Sátira"
-                        "Conteúdo propositalmente falso, para fins humorísticos"
+                        (translate Words.Satire)
+                        (translate Words.SatireDescription)
                     , flagChoice NotNews
-                        "Não é notícia"
-                        "Meme, conteúdo pessoal ou qualquer outra coisa não jornalística"
+                        (translate Words.NotNews)
+                        (translate Words.NotNewsDescription)
                     ]
                 }
             , case model.submitResponse of
                 Failure err ->
-                    paragraph ErrorMessage [ padding 6 ] [ text (humanizeError err) ]
+                    paragraph ErrorMessage [ padding 6 ] [ text (humanizeError model.language err) ]
 
                 _ ->
                     empty
@@ -215,9 +232,9 @@ flagForm model =
                 , button BlueButton
                     [ padding 5, onClickStopPropagation SubmitFlag ]
                     (if isLoading model.submitResponse then
-                        text "Carregando..."
+                        text <| translate Words.Loading
                      else
-                        text "Sinalizar"
+                        text <| translate Words.ReportButton
                     )
                 ]
             ]
