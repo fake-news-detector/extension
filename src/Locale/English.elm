@@ -40,7 +40,7 @@ translate localeValue =
             "Extremely Biased"
 
         ExtremelyBiasedDescription ->
-            "Shows only one side of the story, some points of the news would be exaggerated"
+            "Shows only one side of the story, some points of the news are exaggerated"
 
         Satire ->
             "Satire"
