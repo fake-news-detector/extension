@@ -7,7 +7,7 @@ translate : LocaleKey -> String
 translate localeValue =
     case localeValue of
         Loading ->
-            "Caregando..."
+            "Carregando..."
 
         ReportContent ->
             "Sinalizar conteúdo"
