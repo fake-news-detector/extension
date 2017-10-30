@@ -3,9 +3,9 @@ module Locale.Words exposing (..)
 
 type LocaleKey
     = Loading
-    | ReportContent
-    | ReportQuestion
-    | ReportButton
+    | FlagContent
+    | FlagQuestion
+    | FlagSubmitButton
     | Legitimate
     | LegitimateDescription
     | FakeNews
@@ -19,7 +19,7 @@ type LocaleKey
     | NotNews
     | NotNewsDescription
     | Verified
-    | FlagReportButton
+    | FlagButton
     | InvalidUrlError
     | LoadingError
     | TimeoutError

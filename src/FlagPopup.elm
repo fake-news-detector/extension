@@ -175,8 +175,8 @@ modalContents model =
         [ padding 20, width (px 450) ]
         (column General
             [ spacing 15 ]
-            [ h1 Title [] (text <| translate Words.ReportContent)
-            , paragraph NoStyle [] [ text <| translate Words.ReportQuestion ]
+            [ h1 Title [] (text <| translate Words.FlagContent)
+            , paragraph NoStyle [] [ text <| translate Words.FlagQuestion ]
             , flagForm model
             ]
             |> onRight [ button CloseButton [ onClick ClosePopup, padding 8, moveLeft 8, moveUp 20 ] (text "x") ]
@@ -234,7 +234,7 @@ flagForm model =
                     (if isLoading model.submitResponse then
                         text <| translate Words.Loading
                      else
-                        text <| translate Words.ReportButton
+                        text <| translate Words.FlagSubmitButton
                     )
                 ]
             ]
