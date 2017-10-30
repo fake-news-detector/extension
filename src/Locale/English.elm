@@ -9,14 +9,14 @@ translate localeValue =
         Loading ->
             "Loading..."
 
-        ReportContent ->
-            "Report Content"
+        FlagContent ->
+            "Flag Content"
 
-        ReportQuestion ->
+        FlagQuestion ->
             "Which of the following options best defines this content?"
 
-        ReportButton ->
-            "Report"
+        FlagSubmitButton ->
+            "Submit"
 
         Legitimate ->
             "Legitimate"
@@ -57,8 +57,8 @@ translate localeValue =
         Verified ->
             "(verified)"
 
-        FlagReportButton ->
-            "🏴 Report"
+        FlagButton ->
+            "🏴 Flag"
 
         InvalidUrlError ->
             "Invalid Url: "

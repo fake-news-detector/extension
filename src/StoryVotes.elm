@@ -159,7 +159,7 @@ flagButton : Model -> Element Classes variation Msg
 flagButton model =
     button Button
         [ padding 4, onClickStopPropagation OpenFlagPopup ]
-        (text <| Locale.translate model.language Words.FlagReportButton)
+        (text <| Locale.translate model.language Words.FlagButton)
 
 
 viewVotes : VotesResponse -> Element Classes variation Msg
