@@ -8,6 +8,7 @@ module Locale.Locale
 import Locale.English as English
 import Locale.Languages exposing (Language(..))
 import Locale.Portuguese as Portuguese
+import Locale.Spanish as Spanish
 import Locale.Words exposing (LocaleKey)
 
 
@@ -25,6 +26,9 @@ toCodeArray language =
         English ->
             [ "en" ]
 
+        Spanish ->
+            [ "es" ]
+
 
 translate : Language -> LocaleKey -> String
 translate language localeValue =
@@ -34,6 +38,9 @@ translate language localeValue =
 
         Portuguese ->
             Portuguese.translate localeValue
+
+        Spanish ->
+            Spanish.translate localeValue
 
 
 extractPreferredLanguage : List String -> Language
@@ -48,4 +55,9 @@ extractPreferredLanguage codes =
     if List.member "pt" convertedCodes then
         Portuguese
     else
-        English
+        case List.head convertedCodes of
+            Just "es" ->
+                Spanish
+
+            _ ->
+                English
