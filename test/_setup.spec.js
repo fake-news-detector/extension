@@ -5,7 +5,7 @@ global.loadFixture = path =>
 
 global.userStoryFromFixture = path => {
   document.body.innerHTML = loadFixture(`facebook/${path}`);
-  return document.querySelector(".fbUserStory");
+  return document.querySelector(".userContentWrapper");
 };
 
 global.tweetFromFixture = path => {

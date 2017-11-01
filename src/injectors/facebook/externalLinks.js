@@ -1,18 +1,19 @@
 export const getExternalLinkStory = userStory => {
-  const link = [...userStory.querySelectorAll("a[href]")].filter(
-    isExternalLink
-  )[0];
+  const links = [...userStory.querySelectorAll("a[href]")];
+  const elem = links.find(getExternalUrl);
+  if (!elem) return null;
 
-  if (!link) return null;
+  const textLink = links.find(isTextLink);
+  if (!textLink) return null;
 
   return {
-    elem: link,
-    title: getStoryTitle(link),
-    url: getExternalUrl(link)
+    elem: elem,
+    title: getStoryTitle(textLink),
+    url: getExternalUrl(textLink)
   };
 };
 
-const isExternalLink = a => {
+const isTextLink = a => {
   if (a.dataset.appname || a.text || !a.className) return false;
 
   return getExternalUrl(a);
