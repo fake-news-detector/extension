@@ -11,7 +11,8 @@ const markChecked = userStory => {
 export const notAdvertisement = userStory =>
   !!userStory.querySelector(".timestampContent");
 
-export const notNested = userStory => !userStory.querySelector(".fbUserStory");
+export const notNested = userStory =>
+  !userStory.querySelector(".userContentWrapper");
 
 const findElementToRenderDetector = userStory =>
   getExternalLinkStory(userStory) ||
@@ -19,7 +20,7 @@ const findElementToRenderDetector = userStory =>
   getSharePagePost(userStory);
 
 const elementsToBeInjected = () =>
-  [...document.querySelectorAll(".fbUserStory:not(.fnd-checked)")]
+  [...document.querySelectorAll(".userContentWrapper:not(.fnd-checked)")]
     .map(markChecked)
     .filter(notAdvertisement)
     .filter(notNested)
