@@ -126,7 +126,7 @@ flagButtonAndVotes model =
             Locale.translate model.language
 
         viewVerifiedVote vote =
-            viewVote (Category.toEmoji vote.category) "" vote.category (translate Words.Verified)
+            viewVote model (Category.toEmoji vote.category) "" vote.category (translate Words.Verified)
 
         isValidUrl =
             String.startsWith "http"
@@ -141,7 +141,7 @@ flagButtonAndVotes model =
                             [ viewVerifiedVote vote ]
 
                         Nothing ->
-                            [ flagButton model, viewVotes votes ]
+                            [ flagButton model, viewVotes model votes ]
 
                 Failure _ ->
                     [ flagButton model
@@ -162,14 +162,14 @@ flagButton model =
         (text <| Locale.translate model.language Words.FlagButton)
 
 
-viewVotes : VotesResponse -> Element Classes variation Msg
-viewVotes votes =
+viewVotes : Model -> VotesResponse -> Element Classes variation Msg
+viewVotes model votes =
     let
         viewRobotVote ( category, chance ) =
-            viewVote "\x1F916" (toString chance ++ "%") category ""
+            viewVote model "\x1F916" (toString chance ++ "%") category ""
 
         viewPeopleVote vote =
-            viewVote (Category.toEmoji vote.category) (toString vote.count) vote.category ""
+            viewVote model (Category.toEmoji vote.category) (toString vote.count) vote.category ""
     in
     column NoStyle
         [ spacing 5 ]
@@ -183,12 +183,12 @@ viewVotes votes =
         ]
 
 
-viewVote : String -> String -> Category -> String -> Element Classes variation msg
-viewVote icon preText category postText =
+viewVote : Model -> String -> String -> Category -> String -> Element Classes variation msg
+viewVote model icon preText category postText =
     row VoteCountItem
         [ padding 6, spacing 5, height (px 26) ]
         [ el VoteEmoji [ moveUp 4 ] (text icon)
         , text preText
-        , text (Category.toName category)
+        , text <| String.toLower <| translate model.language (Category.toName category)
         , text postText
         ]

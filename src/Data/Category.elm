@@ -1,5 +1,7 @@
 module Data.Category exposing (..)
 
+import Locale.Words as Words
+
 
 type Category
     = Legitimate
@@ -79,23 +81,23 @@ toEmoji category =
             "🏳️"
 
 
-toName : Category -> String
+toName : Category -> Words.LocaleKey
 toName category =
     case category of
         Legitimate ->
-            "legítimo"
+            Words.Legitimate
 
         FakeNews ->
-            "fake news"
+            Words.FakeNews
 
         ClickBait ->
-            "click bait"
+            Words.ClickBait
 
         ExtremelyBiased ->
-            "tendencioso"
+            Words.ExtremelyBiased
 
         Satire ->
-            "sátira"
+            Words.Satire
 
         NotNews ->
-            "não é notícia"
+            Words.NotNews
