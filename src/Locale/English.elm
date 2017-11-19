@@ -36,6 +36,9 @@ translate localeValue =
         ClickBaitDescription ->
             "Fancy title, does not explain anything about the news just to get more clicks"
 
+        Biased ->
+            "Biased"
+
         ExtremelyBiased ->
             "Extremely Biased"
 

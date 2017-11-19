@@ -36,6 +36,9 @@ translate localeValue =
         ClickBaitDescription ->
             "Título apelativo, não explica a notícia completa de propósito apenas para ganhar cliques"
 
+        Biased ->
+            "Tendencioso"
+
         ExtremelyBiased ->
             "Extremamente Tendencioso"
 

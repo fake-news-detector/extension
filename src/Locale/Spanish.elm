@@ -36,8 +36,11 @@ translate localeValue =
         ClickBaitDescription ->
             "Título no explica la noticia completa de propósito sólo para ganar clics"
 
+        Biased ->
+            "Sesgado"
+
         ExtremelyBiased ->
-            "Extremadamente Tienencioso"
+            "Extremadamente Sesgado"
 
         ExtremelyBiasedDescription ->
             "Sólo muestra un lado de la historia, interpreta de forma exagerada algunos puntos, sin ponderación con otros"

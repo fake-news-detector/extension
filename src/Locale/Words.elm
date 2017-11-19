@@ -12,6 +12,7 @@ type LocaleKey
     | FakeNewsDescription
     | ClickBait
     | ClickBaitDescription
+    | Biased
     | ExtremelyBiased
     | ExtremelyBiasedDescription
     | Satire
