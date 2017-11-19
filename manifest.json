@@ -1,9 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Fake News Detector",
-  "version": "0.17",
-  "description":
-    "Allows users to flag you newsfeed links as fake news, click baits, and more.",
+  "version": "0.18",
+  "description": "Allows users to flag you newsfeed links as fake news, click baits, and more.",
   "homepage_url": "https://fakenewsdetector.org/",
   "icons": {
     "48": "icons/trump-48.png",
