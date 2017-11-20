@@ -3,7 +3,7 @@ export const getExternalLinkStory = userStory => {
   const elem = links.find(getExternalUrl);
   if (!elem) return null;
 
-  const textLink = links.find(isTextLink);
+  const textLink = links.find(getExternalUrl);
   if (!textLink) return null;
 
   return {
@@ -13,13 +13,9 @@ export const getExternalLinkStory = userStory => {
   };
 };
 
-const isTextLink = a => {
-  if (a.dataset.appname || a.text || !a.className) return false;
-
-  return getExternalUrl(a);
-};
-
 export const getExternalUrl = a => {
+  if (a.dataset.appname || a.text || !a.className) return null;
+
   if (!a.href.match(/facebook\.com/) && a.href.match(/http/)) {
     return a.href;
   }

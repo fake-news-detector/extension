@@ -64,4 +64,26 @@ describe("External Links", () => {
       expect(getExternalUrl(a)).to.equal(null);
     });
   });
+
+  describe.only("post from twitter", () => {
+    before(() => {
+      userStory = userStoryFromFixture("postFromTwitter");
+    });
+
+    it("gets the link title", () => {
+      expect(getExternalLinkStory(userStory).title).to.equal("rai on Twitter");
+    });
+
+    it("gets the external url", () => {
+      expect(getExternalLinkStory(userStory).url).to.equal(
+        "https://twitter.com/raissaalmeida/status/931910705409937409/photo/1?utm_source=fb&utm_medium=fb&utm_campaign=gomex&utm_content=932300495623991296"
+      );
+    });
+
+    it("gets the div where the image content lives to render the detector", () => {
+      expect(getExternalLinkStory(userStory).elem).to.equal(
+        document.querySelector("#this-one")
+      );
+    });
+  });
 });
