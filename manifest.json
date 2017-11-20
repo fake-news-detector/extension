@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
-  "name": "Fake News Detector",
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "default_locale": "en",
   "version": "0.19",
-  "description": "Allows users to flag you newsfeed links as fake news, click baits, and more.",
   "homepage_url": "https://fakenewsdetector.org/",
   "icons": {
     "48": "icons/trump-48.png",
