@@ -134,23 +134,22 @@ flagButtonAndVotes model =
     if isValidUrl model.url then
         column General
             [ spacing 5, padding 5, minWidth (px 130) ]
-            (case model.votes of
+            [ flagButton model
+            , case model.votes of
                 Success votes ->
                     case votes.verified of
                         Just vote ->
-                            [ viewVerifiedVote vote ]
+                            viewVerifiedVote vote
 
                         Nothing ->
-                            [ flagButton model, viewVotes model votes ]
+                            viewVotes model votes
 
                 Failure _ ->
-                    [ flagButton model
-                    , el VoteCountItem [ padding 6 ] (text <| translate Words.LoadingError)
-                    ]
+                    el VoteCountItem [ padding 6 ] (text <| translate Words.LoadingError)
 
                 _ ->
-                    [ flagButton model ]
-            )
+                    empty
+            ]
     else
         el General [ padding 5 ] (text <| translate Words.InvalidUrlError ++ model.url)
 
