@@ -1,11 +1,10 @@
-----
+---
 
 [Pre-Requirements](#pre-requirements) | [Running](#running) | [Tech Stack](#tech-stack) | [Testing](#testing) | [Debugging](#debugging) | [Formatting](#formatting) | [Publishing](#publishing)
 
-----
+---
 
-Contributing
-=======
+# Contributing
 
 Contributions are always welcome, no matter how large or small.
 
@@ -13,10 +12,10 @@ Contributions are always welcome, no matter how large or small.
 
 You need to have installed:
 
-- [nodejs](https://nodejs.org/en/download/)
-- npm 5+ (run `npm -g install npm`)
-- elm (run `npm -g install elm`)
-- [Firefox Quantum](https://www.mozilla.org/en-US/firefox/quantum/)
+* [nodejs](https://nodejs.org/en/download/)
+* npm 5+ (run `npm -g install npm`)
+* elm (run `npm -g install elm`)
+* [Firefox Quantum](https://www.mozilla.org/en-US/firefox/quantum/)
 
 ## Running
 
@@ -70,16 +69,24 @@ Instead, for debugging it on firefox you will need to open Tools > Web Developer
 
 ![Tools > Web Developer > Browser Toolbox](https://user-images.githubusercontent.com/792201/31666402-d81136dc-b32a-11e7-885c-4daa770d67bd.png)
 
-This console shows the logs from *everything* on the browser, which can be too much noisy, to focus on developing the extension, you can type `bundle.js` on the search field on the top left corner.
+This console shows the logs from _everything_ on the browser, which can be too much noisy, to focus on developing the extension, you can type `bundle.js` on the search field on the top left corner.
 
 ![Filtering bundle.js](https://user-images.githubusercontent.com/792201/31666481-285ab38e-b32b-11e7-89a1-788ac5bfeb68.png)
+
+Here are some urls you can go to test the extension:
+
+* https://www.facebook.com/ and https://twitter.com/ to test the feed
+* http://www.boatos.org/ for hoaxes
+* https://g1.globo.com/ for verified news
+* https://www.buzzfeed.com/ for click baits
+* https://ceticismopolitico.com/ for extremely biased
 
 ## Formatting
 
 For automatically format the source code, we use two opinionated tools:
 
-- [elm-format](https://github.com/avh4/elm-format) for Elm code
-- [Prettier](https://prettier.io/) for JavaScript code
+* [elm-format](https://github.com/avh4/elm-format) for Elm code
+* [Prettier](https://prettier.io/) for JavaScript code
 
 They both have good integrations with almost every code editor, you should install them on your editor because they format the code automatically, keeping a standard across the codebase.
 
