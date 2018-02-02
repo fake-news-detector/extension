@@ -165,7 +165,7 @@ viewVotes : Model -> VotesResponse -> Element Classes variation Msg
 viewVotes model votes =
     let
         viewRobotVote ( category, chance ) =
-            viewVote model "\x1F916" (toString chance ++ "%") category ""
+            viewVote model "\x1F916" (chanceToText chance model) category ""
 
         viewPeopleVote vote =
             viewVote model (Category.toEmoji vote.category) (toString vote.count) vote.category ""
@@ -180,6 +180,20 @@ viewVotes model votes =
                 empty
         , column NoStyle [ spacing 5 ] (List.map viewPeopleVote votes.people)
         ]
+
+
+chanceToText : number -> Model -> String
+chanceToText chance model =
+    let
+        rebalancedChance =
+            (chance - 50) * 2
+    in
+    if rebalancedChance >= 66 then
+        Locale.translate model.language Words.AlmostCertain
+    else if rebalancedChance >= 33 then
+        Locale.translate model.language Words.LooksALotLike
+    else
+        Locale.translate model.language Words.LooksLike
 
 
 viewVote : Model -> String -> String -> Category -> String -> Element Classes variation msg

@@ -25,3 +25,6 @@ type LocaleKey
     | LoadingError
     | TimeoutError
     | NetworkError
+    | LooksLike
+    | LooksALotLike
+    | AlmostCertain

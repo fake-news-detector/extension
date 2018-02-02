@@ -74,3 +74,12 @@ translate localeValue =
 
         NetworkError ->
             "Network error: check your internet connection"
+
+        LooksLike ->
+            "Looks like"
+
+        LooksALotLike ->
+            "Looks a lot like"
+
+        AlmostCertain ->
+            "I'm almost certain it is"
