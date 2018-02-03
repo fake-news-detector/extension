@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { getExternalLinkTweet } from "../../../src/injectors/twitter/externalLinks";
 
-describe("External Links", () => {
+describe("Twitter External Links", () => {
   let userStory;
 
   describe("tweet with external links", () => {

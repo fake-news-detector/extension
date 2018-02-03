@@ -4,7 +4,7 @@ import {
   getExternalUrl
 } from "../../../src/injectors/facebook/externalLinks";
 
-describe("External Links", () => {
+describe("Facebook External Links", () => {
   let userStory;
 
   describe("post with external links", () => {
@@ -39,15 +39,21 @@ describe("External Links", () => {
   });
 
   describe("getExternalUrl", () => {
+    const createA = href => ({
+      href: href,
+      dataset: {},
+      className: "foo"
+    });
+
     it("returns the url if it is not a facebook one", () => {
-      const a = { href: "http://www.pudim.com.br" };
+      const a = createA("http://www.pudim.com.br");
       expect(getExternalUrl(a)).to.equal(a.href);
     });
 
     it("extracts external link out of facebook's wrapper", () => {
-      let a = {};
-      a.href =
-        "https://l.facebook.com/l.php?u=https%3A%2F%2Ftecnoblog.net%2F224816%2Frumor-preco-iphone-8-plus-brasil%2F&h=ATPUoAPZS7_4ovGV7USWGOosDT_5NhE1bYLryDQKKfgt03fwcna46IbFp1CItisdDKszIIV5JfaDe9oifkpB2kdUpRQLF9AsnoXCjD9POpKrKYmrAb6cFjNtRbzZryhYOs7aygRS_bI-VUu8IfF801fPixhsajw9w7qFjSZjdjTQfUohtPKwS8Q-zor81wKNdqbWHUSLZcwCFrf8TDUELQdeHuwxJngRiWTz1d1W3dBYQqHA_Wcud__TVhpfjzAS2pBeYlbf4vXyH2HdfcQ6k0YrC2v4aBb1HWwDGw";
+      let a = createA(
+        "https://l.facebook.com/l.php?u=https%3A%2F%2Ftecnoblog.net%2F224816%2Frumor-preco-iphone-8-plus-brasil%2F&h=ATPUoAPZS7_4ovGV7USWGOosDT_5NhE1bYLryDQKKfgt03fwcna46IbFp1CItisdDKszIIV5JfaDe9oifkpB2kdUpRQLF9AsnoXCjD9POpKrKYmrAb6cFjNtRbzZryhYOs7aygRS_bI-VUu8IfF801fPixhsajw9w7qFjSZjdjTQfUohtPKwS8Q-zor81wKNdqbWHUSLZcwCFrf8TDUELQdeHuwxJngRiWTz1d1W3dBYQqHA_Wcud__TVhpfjzAS2pBeYlbf4vXyH2HdfcQ6k0YrC2v4aBb1HWwDGw"
+      );
 
       expect(getExternalUrl(a)).to.equal(
         "https://tecnoblog.net/224816/rumor-preco-iphone-8-plus-brasil/"
@@ -55,17 +61,17 @@ describe("External Links", () => {
     });
 
     it("returns null for facebook urls", () => {
-      const a = { href: "http://facebook.com/pudim" };
+      const a = createA("http://facebook.com/pudim");
       expect(getExternalUrl(a)).to.equal(null);
     });
 
     it("returns null for relative urls", () => {
-      const a = { href: "#" };
+      const a = createA("#");
       expect(getExternalUrl(a)).to.equal(null);
     });
   });
 
-  describe.only("post from twitter", () => {
+  describe("post from twitter", () => {
     before(() => {
       userStory = userStoryFromFixture("postFromTwitter");
     });

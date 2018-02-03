@@ -7,7 +7,8 @@ export const getExternalLinkStory = userStory => {
   if (!textLink) return null;
 
   return {
-    elem: elem,
+    elem: userStory.querySelector(".scaledImageFitWidth").parentNode.parentNode
+      .parentNode,
     title: getStoryTitle(textLink),
     url: getExternalUrl(textLink)
   };
