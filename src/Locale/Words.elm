@@ -10,8 +10,6 @@ type LocaleKey
     | LegitimateDescription
     | FakeNews
     | FakeNewsDescription
-    | ClickBait
-    | ClickBaitDescription
     | Biased
     | ExtremelyBiased
     | ExtremelyBiasedDescription
@@ -19,6 +17,12 @@ type LocaleKey
     | SatireDescription
     | NotNews
     | NotNewsDescription
+    | Clickbait
+    | ClickbaitQuestion
+    | ClickbaitDescription
+    | Yes
+    | No
+    | DontKnow
     | Verified
     | FlagButton
     | InvalidUrlError
@@ -28,3 +32,4 @@ type LocaleKey
     | LooksLike
     | LooksALotLike
     | AlmostCertain
+    | FillAllFields

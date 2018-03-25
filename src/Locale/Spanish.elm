@@ -30,12 +30,6 @@ translate localeValue =
         FakeNewsDescription ->
             "Noticia falsa, engaña al lector, difunde rumores"
 
-        ClickBait ->
-            "Click Bait"
-
-        ClickBaitDescription ->
-            "Título no explica la noticia completa de propósito sólo para ganar clics"
-
         Biased ->
             "Sesgado"
 
@@ -56,6 +50,24 @@ translate localeValue =
 
         NotNewsDescription ->
             "Meme, contenido personal o cualquier otra cosa no periodística"
+
+        Clickbait ->
+            "Clickbait"
+
+        ClickbaitQuestion ->
+            "El título es clickbait?"
+
+        ClickbaitDescription ->
+            "El título no explica la noticia completa de propósito, sólo para te dejar curioso y ganar más clics"
+
+        Yes ->
+            "Sí"
+
+        No ->
+            "No"
+
+        DontKnow ->
+            "Yo no sé"
 
         Verified ->
             "(verificado)"
@@ -83,3 +95,6 @@ translate localeValue =
 
         AlmostCertain ->
             "Estoy casi seguro que es"
+
+        FillAllFields ->
+            "Rellene todos los campos"

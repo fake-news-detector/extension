@@ -24,6 +24,34 @@ type alias VotesResponse =
     { verified : Maybe VerifiedVote, robot : List RobotVote, people : List PeopleVote }
 
 
+type YesNoIdk
+    = Yes
+    | No
+    | DontKnow
+
+
+type alias NewVote =
+    { uuid : String
+    , url : String
+    , title : String
+    , category : Category
+    , clickbaitTitle : YesNoIdk
+    }
+
+
+encodeYesNoIdk : YesNoIdk -> Json.Encode.Value
+encodeYesNoIdk val =
+    case val of
+        Yes ->
+            Json.Encode.bool True
+
+        No ->
+            Json.Encode.bool False
+
+        DontKnow ->
+            Json.Encode.null
+
+
 decodeVotesResponse : Decoder VotesResponse
 decodeVotesResponse =
     let
@@ -55,20 +83,21 @@ getVotes url title =
     Http.get ("https://api.fakenewsdetector.org/votes?url=" ++ encodeUri url ++ "&title=" ++ encodeUri title) decodeVotesResponse
 
 
-encodeNewVote : String -> String -> String -> Category -> Json.Encode.Value
-encodeNewVote uuid url title category =
+encodeNewVote : NewVote -> Json.Encode.Value
+encodeNewVote { uuid, url, title, category, clickbaitTitle } =
     Json.Encode.object
         [ ( "uuid", Json.Encode.string uuid )
         , ( "url", Json.Encode.string url )
         , ( "title", Json.Encode.string title )
         , ( "category_id", Json.Encode.int (Category.toId category) )
+        , ( "clickbait_title", encodeYesNoIdk clickbaitTitle )
         ]
 
 
-postVote : String -> String -> String -> Category -> Http.Request ()
-postVote uuid url title category =
+postVote : NewVote -> Http.Request ()
+postVote newVote =
     Http.post "https://api.fakenewsdetector.org/vote"
-        (Http.jsonBody (encodeNewVote uuid url title category))
+        (Http.jsonBody (encodeNewVote newVote))
         (Json.Decode.succeed ())
 
 

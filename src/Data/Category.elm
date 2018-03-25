@@ -6,7 +6,7 @@ import Locale.Words as Words
 type Category
     = Legitimate
     | FakeNews
-    | ClickBait
+    | Clickbait
     | ExtremelyBiased
     | Satire
     | NotNews
@@ -22,7 +22,7 @@ fromId id =
             FakeNews
 
         3 ->
-            ClickBait
+            Clickbait
 
         4 ->
             ExtremelyBiased
@@ -46,7 +46,7 @@ toId category =
         FakeNews ->
             2
 
-        ClickBait ->
+        Clickbait ->
             3
 
         ExtremelyBiased ->
@@ -68,7 +68,7 @@ toEmoji category =
         FakeNews ->
             "💀"
 
-        ClickBait ->
+        Clickbait ->
             "🐟"
 
         ExtremelyBiased ->
@@ -90,8 +90,8 @@ toName category =
         FakeNews ->
             Words.FakeNews
 
-        ClickBait ->
-            Words.ClickBait
+        Clickbait ->
+            Words.Clickbait
 
         ExtremelyBiased ->
             Words.Biased
