@@ -84,20 +84,27 @@ update msg model =
                 peopleVotes =
                     case model.votes of
                         Success votes ->
-                            if List.Extra.find isCategory votes.people == Nothing then
-                                { category = category, count = 1 } :: votes.people
+                            if List.Extra.find isCategory votes.content.people == Nothing then
+                                { category = category, count = 1 } :: votes.content.people
                             else
                                 List.Extra.updateIf isCategory
                                     (\voteCount -> { voteCount | count = voteCount.count + 1 })
-                                    votes.people
+                                    votes.content.people
 
                         _ ->
                             [ { category = category, count = 1 } ]
 
                 updatedVotes =
                     model.votes
-                        |> RemoteData.map (\votes -> { votes | people = peopleVotes })
-                        |> RemoteData.withDefault { verified = Nothing, robot = [], people = peopleVotes }
+                        |> RemoteData.map
+                            (\votes ->
+                                let
+                                    content =
+                                        votes.content
+                                in
+                                { votes | content = { content | people = peopleVotes } }
+                            )
+                        |> RemoteData.withDefault { domain = Nothing, content = { robot = [], people = peopleVotes } }
             in
             ( { model | votes = Success updatedVotes }, Cmd.none )
 
@@ -137,7 +144,7 @@ flagButtonAndVotes model =
             [ flagButton model
             , case model.votes of
                 Success votes ->
-                    case votes.verified of
+                    case votes.domain of
                         Just vote ->
                             viewVerifiedVote vote
 
@@ -172,13 +179,13 @@ viewVotes model votes =
     in
     column NoStyle
         [ spacing 5 ]
-        [ case Votes.bestRobotGuess votes.robot of
+        [ case Votes.bestRobotGuess votes.content.robot of
             Just bestGuess ->
                 viewRobotVote bestGuess
 
             Nothing ->
                 empty
-        , column NoStyle [ spacing 5 ] (List.map viewPeopleVote votes.people)
+        , column NoStyle [ spacing 5 ] (List.map viewPeopleVote votes.content.people)
         ]
 
 

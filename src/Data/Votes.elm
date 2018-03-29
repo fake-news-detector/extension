@@ -2,7 +2,7 @@ module Data.Votes exposing (..)
 
 import Data.Category as Category exposing (..)
 import Http exposing (encodeUri)
-import Json.Decode exposing (Decoder, float, int, list, nullable)
+import Json.Decode exposing (Decoder, float, int, list, nullable, oneOf)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
 import List.Extra
@@ -20,7 +20,19 @@ type alias VerifiedVote =
     { category : Category }
 
 
+type alias ContentVotes =
+    { robot : List RobotVote
+    , people : List PeopleVote
+    }
+
+
 type alias VotesResponse =
+    { domain : Maybe VerifiedVote
+    , content : ContentVotes
+    }
+
+
+type alias OldVotesResponse =
     { verified : Maybe VerifiedVote, robot : List RobotVote, people : List PeopleVote }
 
 
@@ -58,7 +70,7 @@ decodeVotesResponse =
         decodeCategory =
             required "category_id" (Json.Decode.map Category.fromId int)
 
-        decodeVerifiedVote =
+        decodeDomainCategory =
             decode VerifiedVote
                 |> decodeCategory
 
@@ -71,11 +83,27 @@ decodeVotesResponse =
             decode PeopleVote
                 |> decodeCategory
                 |> required "count" int
+
+        decodeContentVotes =
+            decode ContentVotes
+                |> required "robot" (list decodeRobotVote)
+                |> required "people" (list decodePeopleVote)
     in
-    decode VotesResponse
-        |> required "verified" (nullable decodeVerifiedVote)
-        |> required "robot" (list decodeRobotVote)
-        |> required "people" (list decodePeopleVote)
+    oneOf
+        [ decode VotesResponse
+            |> required "domain" (nullable decodeDomainCategory)
+            |> required "content" decodeContentVotes
+        , decode OldVotesResponse
+            |> required "verified" (nullable decodeDomainCategory)
+            |> required "robot" (list decodeRobotVote)
+            |> required "people" (list decodePeopleVote)
+            |> Json.Decode.map
+                (\old ->
+                    { domain = old.verified
+                    , content = { robot = old.robot, people = old.people }
+                    }
+                )
+        ]
 
 
 getVotes : String -> String -> Http.Request VotesResponse
