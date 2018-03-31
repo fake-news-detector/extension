@@ -2,7 +2,7 @@ module Data.Votes exposing (..)
 
 import Data.Category as Category exposing (..)
 import Http exposing (encodeUri)
-import Json.Decode exposing (Decoder, float, int, list, nullable, oneOf)
+import Json.Decode exposing (Decoder, float, int, list, nullable)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
 import List.Extra
@@ -30,10 +30,6 @@ type alias VotesResponse =
     { domain : Maybe VerifiedVote
     , content : ContentVotes
     }
-
-
-type alias OldVotesResponse =
-    { verified : Maybe VerifiedVote, robot : List RobotVote, people : List PeopleVote }
 
 
 type YesNoIdk
@@ -89,21 +85,9 @@ decodeVotesResponse =
                 |> required "robot" (list decodeRobotVote)
                 |> required "people" (list decodePeopleVote)
     in
-    oneOf
-        [ decode VotesResponse
-            |> required "domain" (nullable decodeDomainCategory)
-            |> required "content" decodeContentVotes
-        , decode OldVotesResponse
-            |> required "verified" (nullable decodeDomainCategory)
-            |> required "robot" (list decodeRobotVote)
-            |> required "people" (list decodePeopleVote)
-            |> Json.Decode.map
-                (\old ->
-                    { domain = old.verified
-                    , content = { robot = old.robot, people = old.people }
-                    }
-                )
-        ]
+    decode VotesResponse
+        |> required "domain" (nullable decodeDomainCategory)
+        |> required "content" decodeContentVotes
 
 
 getVotes : String -> String -> Http.Request VotesResponse
