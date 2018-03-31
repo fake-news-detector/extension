@@ -2,33 +2,37 @@ module Data.Votes exposing (..)
 
 import Data.Category as Category exposing (..)
 import Http exposing (encodeUri)
-import Json.Decode exposing (Decoder, float, int, list, nullable)
+import Json.Decode exposing (Decoder, bool, float, int, list, nullable)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
-import List.Extra
 
 
-type alias PeopleVote =
+type alias PeopleVotes =
+    { content : List PeopleContentVote
+    , title : PeopleTitleVotes
+    }
+
+
+type alias PeopleContentVote =
     { category : Category, count : Int }
 
 
-type alias RobotVote =
-    { category : Category, chance : Float }
+type alias PeopleTitleVotes =
+    { clickbait : Bool, count : Int }
+
+
+type alias RobotPredictions =
+    { fake_news : Float, extremely_biased : Float, clickbait : Float }
 
 
 type alias VerifiedVote =
     { category : Category }
 
 
-type alias ContentVotes =
-    { robot : List RobotVote
-    , people : List PeopleVote
-    }
-
-
 type alias VotesResponse =
     { domain : Maybe VerifiedVote
-    , content : ContentVotes
+    , robot : RobotPredictions
+    , people : PeopleVotes
     }
 
 
@@ -70,24 +74,31 @@ decodeVotesResponse =
             decode VerifiedVote
                 |> decodeCategory
 
-        decodeRobotVote =
-            decode RobotVote
-                |> decodeCategory
-                |> required "chance" float
+        decodeRobotPredictions =
+            decode RobotPredictions
+                |> required "fake_news" float
+                |> required "extremely_biased" float
+                |> required "clickbait" float
 
-        decodePeopleVote =
-            decode PeopleVote
+        decodeContentPeopleVote =
+            decode PeopleContentVote
                 |> decodeCategory
                 |> required "count" int
 
-        decodeContentVotes =
-            decode ContentVotes
-                |> required "robot" (list decodeRobotVote)
-                |> required "people" (list decodePeopleVote)
+        decodePeopleTitleVotes =
+            decode PeopleTitleVotes
+                |> required "clickbait" bool
+                |> required "count" int
+
+        decodePeopleVotes =
+            decode PeopleVotes
+                |> required "content" (list decodeContentPeopleVote)
+                |> required "title" decodePeopleTitleVotes
     in
     decode VotesResponse
         |> required "domain" (nullable decodeDomainCategory)
-        |> required "content" decodeContentVotes
+        |> required "robot" decodeRobotPredictions
+        |> required "people" decodePeopleVotes
 
 
 getVotes : String -> String -> Http.Request VotesResponse
@@ -113,7 +124,13 @@ postVote newVote =
         (Json.Decode.succeed ())
 
 
-bestRobotGuess : List RobotVote -> Maybe ( Category, Int )
+bestRobotGuess : RobotPredictions -> Maybe ( Category, Int )
 bestRobotGuess robotVotes =
-    List.Extra.maximumBy (\robotVote -> robotVote.chance) robotVotes
-        |> Maybe.map (\vote -> ( vote.category, round (vote.chance * 100) ))
+    [ ( FakeNews, robotVotes.fake_news )
+    , ( ExtremelyBiased, robotVotes.extremely_biased )
+    , ( Clickbait, robotVotes.clickbait )
+    ]
+        |> List.filter (Tuple.second >> (>) 0.5)
+        |> List.sortBy Tuple.second
+        |> List.map (\( category, chance ) -> ( category, round (chance * 100) ))
+        |> List.head

@@ -1,7 +1,7 @@
 port module StoryVotes exposing (..)
 
 import Data.Category as Category exposing (Category)
-import Data.Votes as Votes exposing (PeopleVote, RobotVote, VerifiedVote, VotesResponse)
+import Data.Votes as Votes exposing (VerifiedVote, VotesResponse)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (onClickStopPropagation)
@@ -84,12 +84,12 @@ update msg model =
                 peopleVotes =
                     case model.votes of
                         Success votes ->
-                            if List.Extra.find isCategory votes.content.people == Nothing then
-                                { category = category, count = 1 } :: votes.content.people
+                            if List.Extra.find isCategory votes.people.content == Nothing then
+                                { category = category, count = 1 } :: votes.people.content
                             else
                                 List.Extra.updateIf isCategory
                                     (\voteCount -> { voteCount | count = voteCount.count + 1 })
-                                    votes.content.people
+                                    votes.people.content
 
                         _ ->
                             [ { category = category, count = 1 } ]
@@ -99,12 +99,20 @@ update msg model =
                         |> RemoteData.map
                             (\votes ->
                                 let
-                                    content =
-                                        votes.content
+                                    people =
+                                        votes.people
                                 in
-                                { votes | content = { content | people = peopleVotes } }
+                                { votes | people = { people | content = peopleVotes } }
                             )
-                        |> RemoteData.withDefault { domain = Nothing, content = { robot = [], people = peopleVotes } }
+                        |> RemoteData.withDefault
+                            { domain = Nothing
+                            , robot =
+                                { fake_news = 0
+                                , extremely_biased = 0
+                                , clickbait = 0
+                                }
+                            , people = { content = peopleVotes, title = { clickbait = False, count = 0 } }
+                            }
             in
             ( { model | votes = Success updatedVotes }, Cmd.none )
 
@@ -179,13 +187,13 @@ viewVotes model votes =
     in
     column NoStyle
         [ spacing 5 ]
-        [ case Votes.bestRobotGuess votes.content.robot of
+        [ case Votes.bestRobotGuess votes.robot of
             Just bestGuess ->
                 viewRobotVote bestGuess
 
             Nothing ->
                 empty
-        , column NoStyle [ spacing 5 ] (List.map viewPeopleVote votes.content.people)
+        , column NoStyle [ spacing 5 ] (List.map viewPeopleVote votes.people.content)
         ]
 
 
