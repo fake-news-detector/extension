@@ -1,20 +1,20 @@
-import { expect } from "chai";
 import { notNested, notAdvertisement } from "../../src/injectors/facebook";
+import { userStoryFromFixture } from "../helpers";
 
 describe("Facebook injector", () => {
-  it("detects nested stories", () => {
+  test("detects nested stories", () => {
     let userStory = userStoryFromFixture("nestedStory");
-    expect(notNested(userStory)).to.equal(false);
+    expect(notNested(userStory)).toBe(false);
 
     userStory = userStoryFromFixture("postFromPage");
-    expect(notNested(userStory)).to.equal(true);
+    expect(notNested(userStory)).toBe(true);
   });
 
-  it("detects advertisement stories", () => {
+  test("detects advertisement stories", () => {
     let userStory = userStoryFromFixture("advertisement");
-    expect(notAdvertisement(userStory)).to.equal(false);
+    expect(notAdvertisement(userStory)).toBe(false);
 
     userStory = userStoryFromFixture("postFromPage");
-    expect(notAdvertisement(userStory)).to.equal(true);
+    expect(notAdvertisement(userStory)).toBe(true);
   });
 });
