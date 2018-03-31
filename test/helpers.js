@@ -1,14 +1,14 @@
 import fs from "fs";
 
-global.loadFixture = path =>
+export const loadFixture = path =>
   fs.readFileSync(__dirname + `/fixtures/${path}.html`);
 
-global.userStoryFromFixture = path => {
+export const userStoryFromFixture = path => {
   document.body.innerHTML = loadFixture(`facebook/${path}`);
   return document.querySelector(".userContentWrapper");
 };
 
-global.tweetFromFixture = path => {
+export const tweetFromFixture = path => {
   document.body.innerHTML = loadFixture(`twitter/${path}`);
   return document.querySelector(".tweet");
 };

@@ -1,40 +1,40 @@
-import { expect } from "chai";
 import {
   getExternalLinkStory,
   getExternalUrl
 } from "../../../src/injectors/facebook/externalLinks";
+import { userStoryFromFixture } from "../../helpers";
 
 describe("Facebook External Links", () => {
   let userStory;
 
   describe("post with external links", () => {
-    before(() => {
+    beforeAll(() => {
       userStory = userStoryFromFixture("postWithExternalLink");
     });
 
-    it("gets the link title", () => {
-      expect(getExternalLinkStory(userStory).title).to.equal(
+    test("gets the link title", () => {
+      expect(getExternalLinkStory(userStory).title).toBe(
         "O dia em que Adriane Galisteu e Faustão estrelaram uma videocassetada ao vivo na TV"
       );
     });
 
-    it("gets the external url", () => {
-      expect(getExternalLinkStory(userStory).url).to.equal(
+    test("gets the external url", () => {
+      expect(getExternalLinkStory(userStory).url).toBe(
         "http://huffp.st/2ynax3o"
       );
     });
 
-    it("gets the div where the image content lives to render the detector", () => {
-      expect(getExternalLinkStory(userStory).elem).to.equal(
+    test("gets the div where the image content lives to render the detector", () => {
+      expect(getExternalLinkStory(userStory).elem).toBe(
         document.querySelector("#this-one")
       );
     });
   });
 
   describe("post with internal links", () => {
-    it("returns null because it is not an external link", () => {
+    test("returns null because it is not an external link", () => {
       userStory = userStoryFromFixture("sharedPostFromPage");
-      expect(getExternalLinkStory(userStory)).to.equal(null);
+      expect(getExternalLinkStory(userStory)).toBe(null);
     });
   });
 
@@ -45,49 +45,49 @@ describe("Facebook External Links", () => {
       className: "foo"
     });
 
-    it("returns the url if it is not a facebook one", () => {
+    test("returns the url if it is not a facebook one", () => {
       const a = createA("http://www.pudim.com.br");
-      expect(getExternalUrl(a)).to.equal(a.href);
+      expect(getExternalUrl(a)).toBe(a.href);
     });
 
-    it("extracts external link out of facebook's wrapper", () => {
+    test("extracts external link out of facebook's wrapper", () => {
       let a = createA(
         "https://l.facebook.com/l.php?u=https%3A%2F%2Ftecnoblog.net%2F224816%2Frumor-preco-iphone-8-plus-brasil%2F&h=ATPUoAPZS7_4ovGV7USWGOosDT_5NhE1bYLryDQKKfgt03fwcna46IbFp1CItisdDKszIIV5JfaDe9oifkpB2kdUpRQLF9AsnoXCjD9POpKrKYmrAb6cFjNtRbzZryhYOs7aygRS_bI-VUu8IfF801fPixhsajw9w7qFjSZjdjTQfUohtPKwS8Q-zor81wKNdqbWHUSLZcwCFrf8TDUELQdeHuwxJngRiWTz1d1W3dBYQqHA_Wcud__TVhpfjzAS2pBeYlbf4vXyH2HdfcQ6k0YrC2v4aBb1HWwDGw"
       );
 
-      expect(getExternalUrl(a)).to.equal(
+      expect(getExternalUrl(a)).toBe(
         "https://tecnoblog.net/224816/rumor-preco-iphone-8-plus-brasil/"
       );
     });
 
-    it("returns null for facebook urls", () => {
+    test("returns null for facebook urls", () => {
       const a = createA("http://facebook.com/pudim");
-      expect(getExternalUrl(a)).to.equal(null);
+      expect(getExternalUrl(a)).toBe(null);
     });
 
-    it("returns null for relative urls", () => {
+    test("returns null for relative urls", () => {
       const a = createA("#");
-      expect(getExternalUrl(a)).to.equal(null);
+      expect(getExternalUrl(a)).toBe(null);
     });
   });
 
   describe("post from twitter", () => {
-    before(() => {
+    beforeAll(() => {
       userStory = userStoryFromFixture("postFromTwitter");
     });
 
-    it("gets the link title", () => {
-      expect(getExternalLinkStory(userStory).title).to.equal("rai on Twitter");
+    test("gets the link title", () => {
+      expect(getExternalLinkStory(userStory).title).toBe("rai on Twitter");
     });
 
-    it("gets the external url", () => {
-      expect(getExternalLinkStory(userStory).url).to.equal(
+    test("gets the external url", () => {
+      expect(getExternalLinkStory(userStory).url).toBe(
         "https://twitter.com/raissaalmeida/status/931910705409937409/photo/1?utm_source=fb&utm_medium=fb&utm_campaign=gomex&utm_content=932300495623991296"
       );
     });
 
-    it("gets the div where the image content lives to render the detector", () => {
-      expect(getExternalLinkStory(userStory).elem).to.equal(
+    test("gets the div where the image content lives to render the detector", () => {
+      expect(getExternalLinkStory(userStory).elem).toBe(
         document.querySelector("#this-one")
       );
     });
