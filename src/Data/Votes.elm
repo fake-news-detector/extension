@@ -130,7 +130,7 @@ bestRobotGuess robotVotes =
     , ( ExtremelyBiased, robotVotes.extremely_biased )
     , ( Clickbait, robotVotes.clickbait )
     ]
-        |> List.filter (Tuple.second >> (>) 0.5)
+        |> List.filter (\prediction -> Tuple.second prediction > 0.5)
         |> List.sortBy Tuple.second
         |> List.map (\( category, chance ) -> ( category, round (chance * 100) ))
         |> List.head
