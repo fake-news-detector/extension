@@ -5,6 +5,7 @@ import Http exposing (encodeUri)
 import Json.Decode exposing (Decoder, bool, float, int, list, nullable)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode
+import Locale.Words as Words
 
 
 type alias PeopleVotes =
@@ -124,13 +125,39 @@ postVote newVote =
         (Json.Decode.succeed ())
 
 
-bestRobotGuess : RobotPredictions -> Maybe ( Category, Int )
-bestRobotGuess robotVotes =
-    [ ( FakeNews, robotVotes.fake_news )
-    , ( ExtremelyBiased, robotVotes.extremely_biased )
-    , ( Clickbait, robotVotes.clickbait )
+chanceToText : number -> Words.LocaleKey
+chanceToText chance =
+    let
+        rebalancedChance =
+            (chance * 100 - 50) * 2
+    in
+    if rebalancedChance >= 66 then
+        Words.AlmostCertain
+    else if rebalancedChance >= 33 then
+        Words.LooksALotLike
+    else
+        Words.LooksLike
+
+
+predictionsToText : RobotPredictions -> List ( Words.LocaleKey, Category )
+predictionsToText predictions =
+    [ ( FakeNews, predictions.fake_news )
+    , ( ExtremelyBiased, predictions.extremely_biased )
+    , ( Clickbait, predictions.clickbait )
     ]
-        |> List.filter (\prediction -> Tuple.second prediction > 0.5)
-        |> List.sortBy Tuple.second
-        |> List.map (\( category, chance ) -> ( category, round (chance * 100) ))
-        |> List.head
+        |> List.filter (\prediction -> Tuple.second prediction > 0.6)
+        |> List.sortBy (\( _, chance ) -> chance * -1)
+        |> List.map (\( word, chance ) -> ( chanceToText chance, word ))
+
+
+joinClickbaitCategory : PeopleVotes -> List PeopleContentVote
+joinClickbaitCategory peopleVotes =
+    let
+        allCategories =
+            if peopleVotes.title.clickbait then
+                peopleVotes.content ++ [ { category = Clickbait, count = peopleVotes.title.count } ]
+            else
+                peopleVotes.content
+    in
+    allCategories
+        |> List.sortBy (\vote -> vote.count * -1)

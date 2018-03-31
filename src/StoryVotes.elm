@@ -179,36 +179,19 @@ flagButton model =
 viewVotes : Model -> VotesResponse -> Element Classes variation Msg
 viewVotes model votes =
     let
-        viewRobotVote ( category, chance ) =
-            viewVote model "\x1F916" (chanceToText chance model) category ""
+        peopleVotes =
+            Votes.joinClickbaitCategory votes.people
+
+        viewRobotVote ( chanceText, category ) =
+            viewVote model "\x1F916" (Locale.translate model.language chanceText) category ""
 
         viewPeopleVote vote =
             viewVote model (Category.toEmoji vote.category) (toString vote.count) vote.category ""
+
+        robotPredictions =
+            Votes.predictionsToText votes.robot
     in
-    column NoStyle
-        [ spacing 5 ]
-        [ case Votes.bestRobotGuess votes.robot of
-            Just bestGuess ->
-                viewRobotVote bestGuess
-
-            Nothing ->
-                empty
-        , column NoStyle [ spacing 5 ] (List.map viewPeopleVote votes.people.content)
-        ]
-
-
-chanceToText : number -> Model -> String
-chanceToText chance model =
-    let
-        rebalancedChance =
-            (chance - 50) * 2
-    in
-    if rebalancedChance >= 66 then
-        Locale.translate model.language Words.AlmostCertain
-    else if rebalancedChance >= 33 then
-        Locale.translate model.language Words.LooksALotLike
-    else
-        Locale.translate model.language Words.LooksLike
+    column NoStyle [ spacing 5 ] (List.map viewRobotVote robotPredictions ++ List.map viewPeopleVote peopleVotes)
 
 
 viewVote : Model -> String -> String -> Category -> String -> Element Classes variation msg
@@ -216,7 +199,12 @@ viewVote model icon preText category postText =
     row VoteCountItem
         [ padding 6, spacing 5, height (px 26) ]
         [ el VoteEmoji [ moveUp 4 ] (text icon)
-        , text preText
-        , text <| String.toLower <| translate model.language (Category.toName category)
+        , text <|
+            preText
+                ++ " "
+                ++ (Category.toName category
+                        |> translate model.language
+                        |> String.toLower
+                   )
         , text postText
         ]
